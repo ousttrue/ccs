@@ -1,5 +1,0 @@
-export PATH="/mingw/bin:$PATH"
-export CCS_TARGET=i686-mingw32
-export CCS_TARGET_ROOT=/mingw
-alias ls='ls --color --show-control-chars'
-PS1='mingw\$ '

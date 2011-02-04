@@ -9,9 +9,10 @@ srcPackage {
     },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-tar xJf /download/libpng-1.5.0.tar.xz -C $DEM_ROOT/src
-cd $DEM_ROOT/src/libpng-1.5.0
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make && make install
+cd $CCS_ROOT
+mkdir -p src
+tar xJf $CCS_DOWNLOAD/libpng-1.5.0.tar.xz -C src
+cd src/libpng-1.5.0
+./configure --prefix=$CCS_TARGET_ROOT && make install
     ]=],
 }
