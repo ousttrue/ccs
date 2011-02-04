@@ -11,6 +11,6 @@ mkdir -p src
 archive=jpegsrc.v8c.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/jpeg-8c
-./configure --prefix=$CCS_TARGET_ROOT && make install
+./configure --prefix=$CCS_TARGET_ROOT --host=$CCS_TARGET && make install
     ]=],
 }
