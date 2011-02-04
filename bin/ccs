@@ -1,0 +1,859 @@
+#!/usr/bin/env lua
+
+local function os_capture(cmd)
+    local f=assert(io.popen(cmd, 'r'))
+    local s=assert(f:read('*a'))
+    f:close()
+    return string.gsub(s, "\r?\n$", "")
+end
+
+local CCS_ROOT=os.getenv("CCS_ROOT") or "/ccs"
+local CCS_TARGET=os.getenv("CCS_TARGET")
+local CCS_HOST=os.getenv("CCS_HOST")
+if not CCS_HOST or CCS_HOST=='' then
+    CCS_HOST=os_capture("echo $OSTYPE")
+end
+if CCS_HOST=="msys" then
+    --
+elseif string.match(CCS_HOST, "linux") then
+    CCS_HOST=os_capture("echo $HOSTTYPE").."-linux"
+end
+local CCS_TARGET_ROOT="/mingw"
+local CCS_DOWNLOAD=os.getenv("CCS_DOWNLOAD") or CCS_ROOT.."/download"
+
+local function extract_cmd(archive, dst)
+    if string.match(archive, "\.tar\.gz$") then
+        return string.format("tar xzf %s -C %s", archive, dst)
+    end
+    if string.match(archive, "\.tar\.bz2$") then
+        return string.format("tar xjf %s -C %s", archive, dst)
+    end
+    if string.match(archive, "\.tar\.lzma$") then
+        return string.format("tar xJf %s -C %s", archive, dst)
+    end
+    if string.match(archive, "\.tar\.xz$") then
+        return string.format("tar xJf %s -C %s", archive, dst)
+    end
+    if string.match(archive, "\.zip$") then
+        return string.format("unzip -qo -d %s %s ", dst, archive)
+    end
+end
+
+local function exists(path)
+    local ret=os.execute("if [ -e "..path.." ];then true;else false;fi")
+    --print(path, ret)
+    return ret==0
+end
+
+local function basename(path)
+    local i=1
+    local last_slash=nil
+    while i<#path do
+        local p=string.find(path, "/", i)
+        if not p then
+            break
+        end
+        last_slash=p
+        i=p+1
+    end
+    return string.sub(path, last_slash and last_slash+1 or 1, #path)
+end
+
+local function extname(path)
+    local i=1
+    local last_hyphen=nil
+    while i<#path do
+        local p=string.find(path, "-", i)
+        if not p then
+            break
+        end
+        last_hyphen=p
+        i=p+1
+    end
+
+    local tail=last_hyphen and string.sub(path, last_hyphen+1, #path) or path
+    local p=string.find(tail, "%.")
+    if p then
+        return string.sub(path, 1, #tail+p-1), string.sub(tail, p+1, #tail)
+    else
+        return tail
+    end
+end
+
+local function packageFromUrl(url)
+    local archive=basename(url)
+    local name, ext=extname(archive)
+    local i=1
+    local first_hyphen=string.find(name, "-", 1)
+    if first_hyphen then
+        return {
+            url=url,
+            name=string.sub(name, 1, first_hyphen-1),
+            version=string.sub(name, first_hyphen+1, #archive),
+        }
+    else
+        return {
+            url=url,
+            name=name,
+            version="0",
+        }
+    end
+end
+
+local function execute_script(script, t)
+    local tmpfile=os.tmpname()
+    local f=assert(io.open(tmpfile, "w"))
+    f:write(script)
+    f:close()
+    local args=""
+    if t then
+        for k, v in pairs(t) do
+            args=args..string.format(' %s="%s"', k, v)
+        end
+    end
+    local result=os.execute("sh "..tmpfile.." "..args)
+    if result>0 then
+        print("execute fail")
+        print(cmd)
+        os.remove(tmpfile)
+        os.exit()
+    end
+    os.remove(tmpfile)
+--[[
+    local f=assert(io.popen("sh", 'w'))
+    f:write(script)
+    f:close()
+--]]
+--[[
+    local cmd="cat << _SH_ | /bin/bash\n"..script.."\n_SH_"
+    local result=os.execute(cmd)
+    if result>0 then
+        print("execute fail")
+        print(cmd)
+        os.exit()
+    end
+--]]
+end
+
+local function extract(archive, dst)
+    os.execute("mkdir -p "..dst)
+    local cmd=extract_cmd(archive, dst)
+    print(cmd)
+    local ret=os.execute(cmd)
+    if ret>0 then
+        print("error occurs")
+        os.exit()
+    end
+end
+
+local function nil_pack(var, ...)
+    if not var then
+        return nil
+    end
+    local t={...}
+    table.insert(t, 1, var)
+    return t
+end
+
+local function map(t, iter, pred)
+    local mapped={}
+    local f, s, var=iter(t)
+    while true do
+        local results=nil_pack(f(s, var))
+        if not results then
+            break
+        end
+        table.insert(mapped, pred(unpack(results)))
+        var=results[1]
+    end
+    return mapped
+end
+
+local function filter(self, f)
+    local t={}
+    for i, v in ipairs(self) do
+        if f(v) then
+            table.insert(t, v)
+        end
+    end
+    return t
+end
+
+local function set(...)
+    local set={}
+    for i, v in pairs({...}) do
+        set[v]=true
+    end
+    return set
+end
+
+local function dir_walk(path, f)
+    if lfs.attributes(path, "mode") == "directory" then
+        for file in lfs.dir(path) do
+            if file=="." or file==".." then
+                -- skip
+            else
+                dir_walk(path .. "/" .. file, f)
+            end
+        end
+    else
+        f(path)
+    end
+end
+
+local function get_pair(t, index)
+    local pair={}
+    local exist=false
+    for i, v in ipairs(t) do
+        local e=v[index]
+        if e then
+            exist=true
+        end
+        table.insert(pair, e)
+    end
+    if exist then
+        return pair
+    end
+end
+
+local function zip(...)
+    local tables={...}
+    local i=1
+
+    return coroutine.wrap(function()
+        while true do
+            local pair=get_pair(tables, i)
+            if not pair then
+                break
+            end
+            coroutine.yield(unpack(pair))
+            i=i+1
+        end
+    end)
+end
+
+
+------------------------------------------------------------------------------
+-- newClass
+------------------------------------------------------------------------------
+function newClass(className, constructor, superClass)
+    local class={
+        name=className,
+    }
+    class.get_class=function() return class end
+    local metaclass={ 
+        __call=function(_, ...)
+            local instance={}
+            setmetatable(instance, {
+                __index=class,
+                __eq=class.eq,
+                __lt=class.lt,
+            })
+            constructor(instance, unpack{...})
+            return instance;
+        end
+    }
+    if superClass then
+        metaclass.__index=superClass
+    end
+    setmetatable(class, metaclass)
+    return class
+end
+
+
+------------------------------------------------------------------------------
+-- Package
+------------------------------------------------------------------------------
+local Package=newClass("Package", function(self, t)
+    for k, v in pairs(t) do
+        self[k]=v
+    end
+end)
+
+function Package:to_s()
+    local s="["..self.host.."]"..self.name
+    if self.version then
+        s=s.."-"..self.version
+    end
+    return s
+end
+
+function Package:eq(rhs)
+    return self.name==rhs.name and self.host==rhs.host
+end
+
+function Package:lt(rhs)
+    local l_version={}
+    if self.version then
+        for m in string.gmatch(self.version, "%d+") do
+            table.insert(l_version, 0+m)
+        end
+    end
+    local r_version={}
+    if rhs.version then
+        for m in string.gmatch(rhs.version, "%d+") do
+            table.insert(r_version, 0+m)
+        end
+    end
+    local iter=zip(l_version, r_version) 
+    while true do
+        local l, r=iter()
+        if not l then
+            break
+        end
+        --print("LR", l, r)
+        l=l or 0
+        r=r or 0
+        if l<r then
+            return true
+        elseif l>r then
+            return false
+        end
+    end
+    --[[
+    if self.release<r.release then
+        return true
+    end
+    --]]
+    return false
+end
+
+function Package:getHost()
+    if self.host=="src" then
+        return CCS_TARGET
+    else
+        return self.host
+    end
+end
+
+function Package:getRegisterFile()
+    local file=CCS_TARGET_ROOT.."/installed/"..self.name
+    --print(file)
+    return file
+end
+
+function Package:isInstalled()
+    return exists(self:getRegisterFile())
+end
+
+function Package:register()
+    local status_file=self:getRegisterFile()
+    --print("register: "..status_file)
+
+    local mkdir_cmd="mkdir -p `dirname "..status_file.."%s`"
+    local ret=os.execute(mkdir_cmd)
+    if ret>0 then
+        print("error occurs")
+        os.exit()
+    end
+
+    local f=io.open(status_file, "w")
+    if not f then
+        print("io.open() fail: ", status_file)
+        os.exit()
+    end
+    f:write("package{\n");
+    for k, v in pairs(self) do
+        if type(v)=="string" then
+            f:write(string.format("%s='%s',\n", k, v))
+        end
+    end
+    f:write("}")
+
+    f:close()
+end
+
+function Package:download(on_download)
+    assert(type(self.url=="table"))
+    if self.url then
+        for i, url in ipairs(self.url) do
+            -- download
+            local archive=self.archive
+            if not archive then
+                archive=assert(string.match(url, "/([^/]+)$"))
+            end
+            local cmd=string.format("(mkdir -p "..CCS_DOWNLOAD.."; cd "..CCS_DOWNLOAD.."; if [ ! -e %s ];then wget --no-check-certificate -O '%s' '%s';fi)",
+            archive, archive, url)
+            --print(cmd)
+            local ret=os.execute(cmd)
+            if ret>0 then
+                print("error occurs")
+                os.exit()
+            end
+
+            -- extract
+            if on_download then
+                on_download(archive)
+            end
+        end
+    elseif self.svn then
+        local cmd=string.format("(cd "..CCS_ROOT.."/src; svn co "..self.svn[1].." "..self.svn[2]..")")
+        local ret=os.execute(cmd)
+        if ret>0 then
+            print("error occurs")
+            os.exit()
+        end
+    end
+end
+
+
+------------------------------------------------------------------------------
+-- BinaryPackage
+------------------------------------------------------------------------------
+local BinaryPackage=newClass("BinaryPackage", function(self, t)
+    for k, v in pairs(t) do
+        self[k]=v
+    end
+end, Package)
+
+function BinaryPackage:install()
+    self:download(function(archive)
+        extract(CCS_DOWNLOAD.."/"..archive, CCS_TARGET_ROOT)
+    end)
+    print(string.format("\n %s installed !!\n", self.name))
+end
+
+
+------------------------------------------------------------------------------
+-- ToolchainPackage
+------------------------------------------------------------------------------
+local ToolchainPackage=newClass("ToolchainPackage", function(self, t)
+    for k, v in pairs(t) do
+        self[k]=v
+    end
+end, Package)
+
+function ToolchainPackage:to_s()
+    local s="[->"..self.target.."]"..self.name
+    if self.version then
+        s=s.."-"..self.version
+    end
+    return s
+end
+
+function ToolchainPackage:isInstalled()
+    return false
+end
+
+function ToolchainPackage:install()
+    self:download(function(archive)
+        extract(CCS_DOWNLOAD.."/"..archive, CCS_TARGET_ROOT)
+    end)
+    print(string.format("\n %s installed !!\n", self.name))
+end
+
+function ToolchainPackage:eq(rhs)
+    return self.name==rhs.name and self.target==rhs.target
+end
+
+------------------------------------------------------------------------------
+-- GroupPackage
+------------------------------------------------------------------------------
+local GroupPackage=newClass("GroupPackage", function(self, t)
+    for k, v in pairs(t) do
+        self[k]=v
+    end
+end, Package)
+
+function GroupPackage:to_s()
+    return self.name.."("..table.concat(
+    map(self.depends, ipairs, function(i, e)
+        if type(e)=="table" then
+            return e[1]
+        else
+            return e
+        end
+    end), "|")..")"
+end
+
+function GroupPackage:install()
+    -- do nothing
+end
+
+
+------------------------------------------------------------------------------
+-- SrcPackage
+------------------------------------------------------------------------------
+local SrcPackage=newClass("SrcPackage", function(self, t)
+    for k, v in pairs(t) do
+        self[k]=v
+    end
+    self.host="src"
+end, Package)
+
+function SrcPackage:to_s()
+    return "*"..self.name.."-"..self.version.."*"
+end
+
+function SrcPackage:install()
+    self:download()
+
+    local script=self.sh
+    local target_key="sh_"..CCS_TARGET
+    if self[target_key] then
+        script=self[target_key]
+    end
+    execute_script(script, {
+        CCS_TARGET_ROOT=CCS_TARGET_ROOT,
+        CCS_DOWNLOAD=CCS_DOWNLOAD,
+    })
+end
+
+
+------------------------------------------------------------------------------
+-- EmptyPackage
+------------------------------------------------------------------------------
+local EmptyPackage=newClass("EmptyPackage", function(self, t)
+    for k, v in pairs(t) do
+        self[k]=v
+    end
+end, Package)
+
+function EmptyPackage:to_s()
+    return "[not found]"..self.name
+end
+
+function EmptyPackage:install()
+end
+
+
+------------------------------------------------------------------------------
+-- loadPackage env
+------------------------------------------------------------------------------
+local function loadPackage(file)
+    local packages={}
+    local env={
+    }
+    setmetatable(env, {
+        __index={
+            binaryPackage=function(t)
+                table.insert(packages, BinaryPackage(t))
+            end,
+            groupPackage=function(t)
+                table.insert(packages, GroupPackage(t))
+            end,
+            srcPackage=function(t)
+                table.insert(packages, SrcPackage(t))
+            end,
+            toolchainPackage=function(t)
+                table.insert(packages, ToolchainPackage(t))
+            end,
+        }
+    })
+    local chunk=assert(loadfile(file))
+    setfenv(chunk, env)
+    chunk()
+    return packages
+end
+
+
+------------------------------------------------------------------------------
+-- Node
+-- dependency tree
+------------------------------------------------------------------------------
+local Node=newClass("Node", function(self, t)
+    self.package=t
+    self.children={}
+end)
+
+function Node:add_child(child)
+    table.insert(self.children, child)
+end
+
+function Node:show()
+    print(self.package.name)
+    for i, v in ipairs(self.children) do
+        print(v:to_s())
+    end
+end
+
+function Node:to_queue()
+    local queue={}
+    self:enqueue_(queue)
+    return queue
+end
+
+function Node:enqueue_(queue)
+    table.insert(queue, 1, self.package)
+    for i, v in ipairs(self.children) do
+        v:enqueue_(queue)
+    end
+end
+
+
+------------------------------------------------------------------------------
+-- Manager
+------------------------------------------------------------------------------
+local Manager=newClass("Manager", function(self)
+    -- load packages
+    self.packages={}
+    dir_walk(CCS_ROOT.."/package", function(f)
+        for i, v in ipairs(loadPackage(f)) do
+            if self.packages[v.name] then
+                table.insert(self.packages[v.name], v)
+            else
+                self.packages[v.name]={v}
+            end
+        end
+    end)
+    print("HOST to TARGET:", CCS_HOST.." to "..CCS_TARGET)
+    print()
+end)
+
+function Manager:usage()
+    local hosts={}
+
+    return string.format([=[
+usage: ccs {list|install|toolchain} [args...]
+
+list : display installed packages.
+toolchain : install compile toolchain.
+install {package}: install a package. 
+
+CCS_ROOT: %s
+CCS_TARGET_ROOT: %s
+CCS_DOWNLOAD: %s
+    ]=], CCS_ROOT, CCS_TARGET_ROOT, CCS_DOWNLOAD)
+end
+
+function Manager:show_list(hosts)
+    if #hosts>0 then
+        for i, host in ipairs(hosts) do
+            print("["..host.."]")
+            local keys=map(self.packages, pairs, function(k, v)
+                return k
+            end)
+            table.sort(keys)
+            for i, k in ipairs(keys) do
+                local v=self.packages[k]
+                local line=table.concat(map(filter(v, function(e)
+                    return e.host==host
+                end
+                ), ipairs, function(i, e) 
+                    return e:to_s() 
+                end), ", ")
+                if line~="" then
+                    print(line)
+                end
+            end
+        end
+    else
+        for k, v in pairs(self.packages) do
+            print(table.concat(map(v, ipairs, function(i, e) return e:to_s() end), ", "))
+        end
+    end
+end
+
+function Manager:find(target)
+    local founds={}
+    local packages=self.packages[target.name]
+    if packages then
+        for i, v in ipairs(packages) do
+            class=v:get_class()
+            if class==SrcPackage or v==target then
+                table.insert(founds, v)
+            end
+        end
+    end
+    if #founds>0 then
+        if #founds>1 then
+            table.sort(founds, function(a, b)
+                return a<b
+            end)
+        end
+        return founds[#founds]
+    end
+end
+
+function Manager:install(target)
+    local t=self:find(Package{name=target, host=CCS_HOST, target=CCS_TARGET})
+    if not t then
+        print("not found", target)
+        os.exit()
+    end
+
+    -- dependency
+    print("resolve dependency...")
+    root=Node(t)
+    self:resolve_dependencies(root)
+    --root:show()
+
+    -- create install queue
+    local queue=root:to_queue()
+    print(string.format("## install queue %d ##", #queue))
+    local notFound=false
+    for i, v in ipairs(queue) do
+        print(v:to_s())
+        if v:get_class()==EmptyPackage then
+            notFound=true
+        end
+    end
+    print(string.format("## install queue %d ##", #queue))
+
+    if notFound then
+        print("not exist package")
+        os.exit()
+    end
+    print()
+    for i, v in ipairs(queue) do
+        print(v:to_s())
+        if v:isInstalled() then
+            print("installed:", v:getRegisterFile())
+        else
+            v:install()
+            if v.post then
+                execute_script(v.post)
+            end
+            v:register()
+        end
+    end
+end
+
+function Manager:resolve_dependencies(node)
+    local p=node.package
+    local depends=p["depends_"..CCS_TARGET] or p.depends
+    if depends then
+        for i, v in ipairs(depends) do
+            local t=nil
+            local name=nil
+            if type(v)=="string" then
+                t=Package{name=v, host=CCS_HOST}
+                name=v
+            elseif type(v)=="table" then
+                if #v==3 then
+                    t=ToolchainPackage{name=v[1], host=v[2], target=v[3]}
+                    name=v[1]
+                elseif #v==2 then
+                    t=BinaryPackage{name=v[1], host=v[2]}
+                    name=v[1]
+                end
+            end
+            local p=self:find(t)
+            local child=nil
+            if p then
+                child=Node(p)
+                self:resolve_dependencies(child)
+            else
+                child=Node(EmptyPackage{name=name})
+            end
+            node:add_child(child)
+        end
+    end
+end
+
+function Manager:toolchain()
+    local t=nil
+    for i, v in ipairs(self.packages['toolchain']) do
+        if v.target==CCS_TARGET then
+            t=v
+            break
+        end
+    end
+    if not t then
+        print("not found", target)
+        os.exit()
+    end
+
+    -- dependency
+    print("resolve dependency...")
+    root=Node(t)
+    self:resolve_dependencies(root)
+    --root:show()
+
+    -- create install queue
+    local queue=root:to_queue()
+    print(string.format("## install queue %d ##", #queue))
+    local notFound=false
+    for i, v in ipairs(queue) do
+        print(v:to_s())
+        if v:get_class()==EmptyPackage then
+            notFound=true
+        end
+    end
+    print(string.format("## install queue %d ##", #queue))
+
+    if notFound then
+        print("not exist package")
+        os.exit()
+    end
+    print()
+    for i, v in ipairs(queue) do
+        print(v:to_s())
+        if v:isInstalled() then
+            print("installed")
+        else
+            v:install()
+            if v.post then
+                execute_script(v.post)
+            end
+            v:register()
+        end
+    end
+end
+
+
+------------------------------------------------------------------------------
+-- main
+------------------------------------------------------------------------------
+print("Cross Compile Script")
+print()
+
+local manager=Manager()
+
+if #arg==0 then
+    print(manager:usage())
+    os.exit()
+end
+
+local cmd=table.remove(arg, 1)
+
+
+if cmd=="list" then
+    manager:show_list(arg)
+
+elseif cmd=="install" then
+    if #arg==0 then
+        print "no target"
+        os.exit()
+    end
+    for i, v in ipairs(arg) do
+        manager:install(v)
+    end
+
+elseif cmd=="toolchain" then
+    manager:toolchain()
+
+elseif cmd=="create" then
+    local p=packageFromUrl(arg[1])
+    local path=CCS_ROOT.."/package/"..p.name..".lua"
+    print("create:", path)
+    if not exists(path) then
+        local f=io.open(path, "w")
+        f:write('srcPackage {\n')
+        f:write('    name="'..p.name..'",\n')
+        f:write('    version="'..p.version..'",\n')
+        f:write('    host="'..CCS_HOST..'",\n')
+        f:write('    url={\n')
+        f:write('        "'..p.url..'"\n')
+        f:write('    },\n')
+        f:write(string.format([==[ 
+    sh=[=[
+set -x
+mkdir -p $CCS_ROOT/src
+archive=`basename %s`
+archive_dir=`extract %s/$archive $CCS_ROOT/src`
+cd $CCS_ROOT/src/$archive_dir
+./configure --prefix=$CCS_ROOT/host/$CCS_TARGET && make install
+    ]=],
+]==],
+        p.url, CCS_DOWNLOAD))
+        f:write('}\n')
+        f:close()
+    end
+
+else
+    print("unknown cmd:", cmd)
+end
+
+print()
+
