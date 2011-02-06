@@ -9,9 +9,10 @@ srcPackage {
     },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-tar xjf /download/libvorbis-1.3.2.tar.bz2 -C $DEM_ROOT/src
-cd $DEM_ROOT/src/libvorbis-1.3.2
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make && make install
+cd $CCS_TARGET_ROOT
+mkdir -p src
+tar xjf $CCS_DOWNLOAD/libvorbis-1.3.2.tar.bz2 -C src
+cd src/libvorbis-1.3.2
+./configure --prefix=$CCS_TARGET_ROOT && make install
     ]=],
 }

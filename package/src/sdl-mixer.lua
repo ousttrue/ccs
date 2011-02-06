@@ -10,13 +10,14 @@ srcPackage {
     },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-tar xzf /download/SDL_mixer-1.2.11.tar.gz -C $DEM_ROOT/src
-cd $DEM_ROOT/src/SDL_mixer-1.2.11
+cd $CCS_TARGET_ROOT
+mkdir -p src
+tar xzf $CCS_DOWNLOAD/SDL_mixer-1.2.11.tar.gz -C src
+cd src/SDL_mixer-1.2.11
 # Regenerate configuration files
 cat acinclude/* >aclocal.m4
 autoconf
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
 make install
     ]=],
 }

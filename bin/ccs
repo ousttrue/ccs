@@ -7,8 +7,12 @@ local function os_capture(cmd)
     return string.gsub(s, "\r?\n$", "")
 end
 
-local CCS_ROOT=os.getenv("CCS_ROOT") or "/ccs"
+local CCS_ROOT=os.getenv("CCS_ROOT") or ""
 local CCS_TARGET=os.getenv("CCS_TARGET")
+if not CCS_TARGET then
+    print "require CCS_TARGET environment variable"
+    os.exit()
+end
 local CCS_HOST=os.getenv("CCS_HOST")
 if not CCS_HOST or CCS_HOST=='' then
     CCS_HOST=os_capture("echo $OSTYPE")
@@ -18,7 +22,17 @@ if CCS_HOST=="msys" then
 elseif string.match(CCS_HOST, "linux") then
     CCS_HOST=os_capture("echo $HOSTTYPE").."-linux"
 end
-local CCS_TARGET_ROOT="/mingw"
+local target_map={
+    ["msys"]="/usr",
+    ["cygwin"]="/usr",
+    ["i686-pc-mingw32"]="/i686-pc-mingw32",
+    ["x86_64-w64-mingw32"]="/x86_64-w64-mingw32",
+}
+local CCS_TARGET_ROOT=target_map[CCS_TARGET]
+if not CCS_TARGET_ROOT then
+    print("NO CCS_TARGET_ROOT for "..CCS_TARGET)
+    os.exit()
+end
 local CCS_DOWNLOAD=os.getenv("CCS_DOWNLOAD") or CCS_ROOT.."/download"
 
 local function extract_cmd(archive, dst)
@@ -105,16 +119,17 @@ local function execute_script(script, t)
     local f=assert(io.open(tmpfile, "w"))
     f:write(script)
     f:close()
-    local args=""
+    local env=""
     if t then
         for k, v in pairs(t) do
-            args=args..string.format(' %s="%s"', k, v)
+            env=env..string.format(' %s="%s"', k, v)
         end
     end
-    local result=os.execute("sh "..tmpfile.." "..args)
+    local cmd=env.." sh "..tmpfile.." "
+    print(cmd)
+    local result=os.execute(cmd)
     if result>0 then
         print("execute fail")
-        print(cmd)
         os.remove(tmpfile)
         os.exit()
     end
@@ -406,6 +421,10 @@ local BinaryPackage=newClass("BinaryPackage", function(self, t)
     end
 end, Package)
 
+function BinaryPackage:eq(rhs)
+    return self.name==rhs.name and rhs.target==CCS_TARGET
+end
+
 function BinaryPackage:install()
     self:download(function(archive)
         extract(CCS_DOWNLOAD.."/"..archive, CCS_TARGET_ROOT)
@@ -494,8 +513,9 @@ function SrcPackage:install()
         script=self[target_key]
     end
     execute_script(script, {
-        CCS_TARGET_ROOT=CCS_TARGET_ROOT,
+        CCS_TARGET_ROOT=CCS_TARGET_ROOT.."/local",
         CCS_DOWNLOAD=CCS_DOWNLOAD,
+        CCS_URL=self.url[0],
     })
 end
 
@@ -588,11 +608,13 @@ local Manager=newClass("Manager", function(self)
     -- load packages
     self.packages={}
     dir_walk(CCS_ROOT.."/package", function(f)
-        for i, v in ipairs(loadPackage(f)) do
-            if self.packages[v.name] then
-                table.insert(self.packages[v.name], v)
-            else
-                self.packages[v.name]={v}
+        if f:match("%.lua$") then
+            for i, v in ipairs(loadPackage(f)) do
+                if self.packages[v.name] then
+                    table.insert(self.packages[v.name], v)
+                else
+                    self.packages[v.name]={v}
+                end
             end
         end
     end)
@@ -650,7 +672,8 @@ function Manager:find(target)
     if packages then
         for i, v in ipairs(packages) do
             class=v:get_class()
-            if class==SrcPackage or v==target then
+            --if class==SrcPackage or v==target then
+            if class==SrcPackage or v:eq(target) then
                 table.insert(founds, v)
             end
         end
@@ -836,17 +859,18 @@ elseif cmd=="create" then
         f:write('    url={\n')
         f:write('        "'..p.url..'"\n')
         f:write('    },\n')
-        f:write(string.format([==[ 
+        f:write([==[ 
     sh=[=[
 set -x
-mkdir -p $CCS_ROOT/src
-archive=`basename %s`
-archive_dir=`extract %s/$archive $CCS_ROOT/src`
-cd $CCS_ROOT/src/$archive_dir
-./configure --prefix=$CCS_ROOT/host/$CCS_TARGET && make install
+cd $CCS_ROOT
+mkdir -p src
+archive=`basename $CCS_URL`
+archive_dir=`extract $CCS_DOWNLOAD/$archive src`
+cd src/$archive_dir
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
     ]=],
-]==],
-        p.url, CCS_DOWNLOAD))
+]==]
+        )
         f:write('}\n')
         f:close()
     end

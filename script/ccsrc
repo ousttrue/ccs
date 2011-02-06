@@ -1,0 +1,11 @@
+if [ -e "/etc/profile" ];then
+source "/etc/profile"
+fi
+
+if [ -e "$HOME/.bash_profile" ];then
+    source "$HOME/.bash_profile"
+elif [ -e "$HOME/.bashrc" ];then
+    source "$HOME/.bashrc"
+fi
+
+export CCS_DOWNLOAD=/c/download

@@ -1,0 +1,36 @@
+diff -Naru src.orig/Makefile src/Makefile
+--- src.orig/Makefile	2008-01-20 04:37:58.000000000 +0900
++++ src/Makefile	2011-01-24 05:36:53.653656219 +0900
+@@ -27,7 +27,7 @@
+ 	lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o ltm.o  \
+ 	lundump.o lvm.o lzio.o
+ LIB_O=	lauxlib.o lbaselib.o ldblib.o liolib.o lmathlib.o loslib.o ltablib.o \
+-	lstrlib.o loadlib.o linit.o
++	lstrlib.o loadlib.o linit.o lfs.o
+ 
+ LUA_T=	lua
+ LUA_O=	lua.o
+diff -Naru src.orig/linit.c src/linit.c
+--- src.orig/linit.c	2007-12-27 22:02:25.000000000 +0900
++++ src/linit.c	2011-01-24 05:39:22.105656777 +0900
+@@ -23,6 +23,7 @@
+   {LUA_STRLIBNAME, luaopen_string},
+   {LUA_MATHLIBNAME, luaopen_math},
+   {LUA_DBLIBNAME, luaopen_debug},
++  {LUA_FILESYSTEMNAME, luaopen_lfs},
+   {NULL, NULL}
+ };
+ 
+diff -Naru src.orig/lualib.h src/lualib.h
+--- src.orig/lualib.h	2007-12-27 22:02:25.000000000 +0900
++++ src/lualib.h	2011-01-24 05:39:04.518656219 +0900
+@@ -39,6 +39,9 @@
+ #define LUA_LOADLIBNAME	"package"
+ LUALIB_API int (luaopen_package) (lua_State *L);
+ 
++#define LUA_FILESYSTEMNAME	"lfs"
++LUALIB_API int (luaopen_lfs) (lua_State *L);
++
+ 
+ /* open all previous libraries */
+ LUALIB_API void (luaL_openlibs) (lua_State *L); 

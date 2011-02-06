@@ -1,0 +1,14 @@
+bin
+sbin
+share
+var
+etc
+include
+lib
+home
+installed
+
+i686-pc-win32/*
+x86_64-w64-mingw32/*
+*.lnk
+*.ico

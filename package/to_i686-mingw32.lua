@@ -1,12 +1,12 @@
 toolchainPackage {
     name="toolchain",
     host="msys",
-    target="i686-mingw32",
+    target="i686-pc-mingw32",
     depends={
-        {"binutils", "msys", "i686-mingw32"},
-        {"gcc", "msys", "i686-mingw32"},
-        {"mingwrt", "i686-mingw32"},
-        {"w32api", "i686-mingw32"},
+        {"binutils", "msys", "i686-pc-mingw32"},
+        {"gcc", "msys", "i686-pc-mingw32"},
+        {"mingwrt", "i686-pc-mingw32"},
+        {"w32api", "i686-pc-mingw32"},
     },
 }
 ------------------------------------------------------------------------------
@@ -16,7 +16,7 @@ toolchainPackage {
 toolchainPackage {
     name="gcc",
     host="msys",
-    target="i686-mingw32",
+    target="i686-pc-mingw32",
     version="4.5.2",
     release="1",
     url={
@@ -25,14 +25,14 @@ toolchainPackage {
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/BaseSystem/GCC/Version4/gcc-4.5.2-1/gcc-c++-4.5.2-1-mingw32-bin.tar.lzma",
     },
     post=[=[
-cd /target/i686-mingw32/bin
+cd /target/i686-pc-mingw32/bin
 cp gcc.exe cc.exe
     ]=],
 }
 --]]
 toolchainPackage {
     name="gcc",
-    target="i686-mingw32",
+    target="i686-pc-mingw32",
     version="4.5.1",
     release="1",
     url={
@@ -47,7 +47,7 @@ toolchainPackage {
 toolchainPackage {
     name="gcc",
     host="msys",
-    target="i686-mingw32",
+    target="i686-pc-mingw32",
     version="4.5.0",
     release="1",
     url={
@@ -59,7 +59,7 @@ toolchainPackage {
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/mpfr/mpfr-2.4.1-1/libmpfr-2.4.1-1-mingw32-dll-1.tar.lzma",
     },
     post=[=[
-cd /target/i686-mingw32/bin
+cd /target/i686-pc-mingw32/bin
 cp gcc.exe cc.exe
     ]=],
 }
@@ -70,7 +70,7 @@ cp gcc.exe cc.exe
 toolchainPackage {
     name="binutils",
     host="msys",
-    target="i686-mingw32",
+    target="i686-pc-mingw32",
     version="2.21",
     release="2",
     url={
@@ -80,7 +80,7 @@ toolchainPackage {
 ------------------------------------------------------------------------------
 binaryPackage {
     name="mingwrt",
-    host="i686-mingw32",
+    host="i686-pc-mingw32",
     version="3.18",
     url={
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/BaseSystem/RuntimeLibrary/MinGW-RT/mingwrt-3.18/mingwrt-3.18-mingw32-dev.tar.gz",
@@ -90,7 +90,7 @@ binaryPackage {
 }
 binaryPackage {
     name="w32api",
-    host="i686-mingw32",
+    host="i686-pc-mingw32",
     version="3.15",
     release="1",
     url={

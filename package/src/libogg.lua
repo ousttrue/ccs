@@ -6,9 +6,10 @@ srcPackage {
     },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-tar xJf /download/libogg-1.2.2.tar.xz -C $DEM_ROOT/src
-cd $DEM_ROOT/src/libogg-1.2.2
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make && make install
+cd $CCS_TARGET_ROOT
+mkdir -p src
+tar xJf $CCS_DOWNLOAD/libogg-1.2.2.tar.xz -C src
+cd src/libogg-1.2.2
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
     ]=],
 }

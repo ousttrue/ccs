@@ -10,10 +10,11 @@ srcPackage {
  
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
+cd $CCS_TARGET_ROOT
+mkdir -p src
 archive=`basename http://pkgconfig.freedesktop.org/releases/pkg-config-0.25.tar.gz`
-archive_dir=`extract /download/$archive $DEM_ROOT/src`
-cd $DEM_ROOT/src/$archive_dir
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make install
+archive_dir=`extract $CCS_DOWNLOAD/$archive src`
+cd src/$archive_dir
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
     ]=],
 }

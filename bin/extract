@@ -1,0 +1,39 @@
+#!/bin/sh
+# archive extract helper
+
+if [ $# -lt 2 ];then
+    exit
+fi
+mkdir -p $2
+archive=`basename $1`
+
+case $1 in
+    *.tgz)
+    tar xzf $1 -C $2
+    echo ${archive//.tgz//}
+    ;;
+    *.tar.gz)
+    tar xzf $1 -C $2
+    echo ${archive//.tar.gz//}
+    ;;
+    *.tar.bz2)
+    tar xjf $1 -C $2
+    echo ${archive//.tar.bz2//}
+    ;;
+    *.tar.xz)
+    tar xJf $1 -C $2
+    echo ${archive//.tar.xz//}
+    ;;
+    *.tar.lzma)
+    tar xJf $1 -C $2
+    echo ${archive//.tar.lzma//}
+    ;;
+    *.zip)
+    unzip -qo -d $2 $1
+    echo ${archive//.zip//}
+    ;;
+    *)
+    exit 1
+    ;;
+esac
+

@@ -1,0 +1,32 @@
+diff -Naru screen-4.0.3.orig/extern.h screen-4.0.3/extern.h
+--- screen-4.0.3.orig/extern.h	2011-01-27 18:51:43 +0900
++++ screen-4.0.3/extern.h	2011-01-27 18:52:24 +0900
+@@ -146,9 +146,7 @@
+ #ifdef ZMODEM
+ extern void  zmodem_abort __P((struct win *, struct display *));
+ #endif
+-#ifndef __CYGWIN__
+ extern void  execvpe __P((char *, char **, char **));
+-#endif
+ 
+ /* utmp.c */
+ #ifdef UTMPOK
+diff -Naru screen-4.0.3.orig/window.c screen-4.0.3/window.c
+--- screen-4.0.3.orig/window.c	2011-01-27 18:51:43 +0900
++++ screen-4.0.3/window.c	2011-01-27 18:52:18 +0900
+@@ -1390,7 +1390,6 @@
+   return pid;
+ }
+ 
+-#ifndef __CYGWIN__
+ 
+ void
+ execvpe(prog, args, env)
+@@ -1438,7 +1437,6 @@
+     errno = EACCES;
+ }
+ 
+-#endif /* __CYGWIN__ */
+ 
+ #ifdef PSEUDOS
+ 

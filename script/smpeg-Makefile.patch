@@ -1,0 +1,20 @@
+--- Makefile.orig	2011-01-28 01:23:27 +0900
++++ Makefile	2011-01-28 01:27:46 +0900
+@@ -194,7 +194,7 @@
+ EGREP = /bin/grep -E
+ EXEEXT = .exe
+ FGREP = /bin/grep -F
+-GL_LIBS = -lGL -lGLU
++GL_LIBS = -lopengl32 -lglu32
+ GREP = /bin/grep
+ GTK_CFLAGS = 
+ GTK_LIBS = 
+@@ -402,7 +402,7 @@
+ 
+ # Sources for glmovie
+ glmovie_SOURCES = glmovie-tile.c glmovie.c glmovie.h
+-glmovie_LDADD = -lGL -lGLU libsmpeg.la
++glmovie_LDADD = -lopengl32 -lglu32 libsmpeg.la
+ 
+ # M4 macro file for inclusion with autoconf
+ m4datadir = $(datadir)/aclocal

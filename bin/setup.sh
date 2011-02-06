@@ -12,7 +12,7 @@ function setup_cygwin()
     cp "$CCS_ROOT/bin/lua_cygwin.exe" /usr/local/bin/lua.exe
 
     # mount CCS_ROOT 
-    if grep -q "/ccs" /etc/fstab; then
+    if egrep -q "/ccs\s" /etc/fstab; then
         true
     else
         cat << _FSTAB_ >> /etc/fstab
@@ -22,11 +22,11 @@ _FSTAB_
     fi
 
     # mount mingw 
-    if grep -q "/mingw" /etc/fstab; then
+    if egrep -q "/mingw\s" /etc/fstab; then
         true
     else
         cat << _FSTAB_ >> /etc/fstab
-$CCS_ROOT_WIN/mingw /mingw some_fs binary 0 0
+C:/mingw /mingw some_fs binary 0 0
 _FSTAB_
     fi
 

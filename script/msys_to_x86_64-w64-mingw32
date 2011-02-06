@@ -1,0 +1,10 @@
+source $CCS_ROOT/script/ccsrc
+
+export CCS_TARGET=x86_64-w64-mingw32
+export CCS_TARGET_ROOT=/$CCS_TARGET
+export PATH="$CCS_TARGET_ROOT/local/bin:$CCS_TARGET_ROOT/bin:$PATH"
+export PKG_CONFIG_PATH=$CCS_TARGET_ROOT/local/lib/pkgconfig
+
+export LANG=ja_JP.SJIS
+
+exec /bin/bash -i

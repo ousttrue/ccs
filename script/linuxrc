@@ -1,0 +1,13 @@
+if [ x$"$DEM_ROOT" = x"" ];then
+    echo "require environment variable DEM_ROOT"
+    exit
+fi
+PS1='dev\$ '
+
+export DEM_TARGET=$HOSTTYPE-linux
+export DEM_WORK=$DEM_ROOT/host/$HOSTTYPE-linux
+mkdir -p $DEM_WORK/bin
+cd $DEM_WORK
+
+export PATH=$DEM_WORK/bin:$PATH
+

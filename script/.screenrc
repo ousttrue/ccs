@@ -1,0 +1,29 @@
+defscrollback 10000
+
+#defutf8 on
+#defkanji utf-8
+#encoding utf-8 utf-8
+#defencoding utf-8
+encoding sjis sjis
+defencoding sjis
+termcapinfo cygwin KJ=SJIS
+
+escape ^Ll
+zombie "q^M"
+
+termcap kterm hs@
+terminfo kterm hs@
+#term xterm-color
+vbell off
+bell_msg "Bell in window %^G"
+shell /bin/bash
+startup_message off
+autodetach on
+
+#hardstatus alwayslastline "%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wb}%y/%m/%d %{=b wb}%c"
+
+caption always "%h"
+hardstatus alwayslastline "[%02c] %`%-w%{=b bw}%n %t%{-}%+w"
+
+#echo "\033P\033]0;$USER@$HOSTNAME\007\033\\"
+

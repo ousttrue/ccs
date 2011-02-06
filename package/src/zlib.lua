@@ -1,6 +1,6 @@
 local sh_configure=[=[
 set -x
-cd "$CCS_ROOT"
+cd $CCS_TARGET_ROOT/
 mkdir -p src
 rm -rf src/zlib-1.2.5
 tar xzf "$CCS_DOWNLOAD/zlib-1.2.5.tar.gz" -C src
@@ -11,7 +11,7 @@ make install
 
 local sh_win=[=[
 set -x
-cd "$CCS_ROOT"
+cd $CCS_TARGET_ROOT/
 mkdir -p src
 rm -rf src/zlib-1.2.5
 tar xzf "$CCS_DOWNLOAD/zlib-1.2.5.tar.gz" -C src
@@ -28,6 +28,7 @@ srcPackage {
     ["sh"]=sh_configure,
     ["sh_msys"]=sh_win,
     ["sh_i686-mingw32"]=sh_win,
-    ["sh_mingw-w64"]=sh_win,
+    ["sh_i686-w64-mingw32"]=sh_win,
+    ["sh_x86_64-w64-mingw32"]=sh_win,
 }
 

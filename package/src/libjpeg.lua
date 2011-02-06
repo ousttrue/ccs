@@ -6,7 +6,7 @@ srcPackage {
     },
     sh=[=[
 set -x
-cd $CCS_ROOT
+cd $CCS_TARGET_ROOT/
 mkdir -p src
 archive=jpegsrc.v8c.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`

@@ -10,12 +10,13 @@ srcPackage {
     },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-tar xzf /download/smpeg-0.4.5.tar.gz -C $DEM_ROOT/src
-cd $DEM_ROOT/src/smpeg-0.4.5
+cd $CCS_TARGET_ROOT
+mkdir -p src
+tar xzf $CCS_DOWNLOAD/smpeg-0.4.5.tar.gz -C src
+cd src/smpeg-0.4.5
 sh autogen.sh
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET
-patch < /script/smpeg-Makefile.patch
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+patch < $CCS_ROOT/script/smpeg-Makefile.patch
 make install
     ]=],
 }

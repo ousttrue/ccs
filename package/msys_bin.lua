@@ -220,7 +220,8 @@ binaryPackage {
     release="1",
     host="msys",
     url={
-        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/expat/expat-2.0.1-1/libexpat-2.0.1-1-msys-1.0.13-dll-1.tar.lzma"
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/expat/expat-2.0.1-1/libexpat-2.0.1-1-msys-1.0.13-dll-1.tar.lzma",
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/expat/expat-2.0.1-1/libexpat-2.0.1-1-msys-1.0.13-dll-1.tar.lzma",
     },
 }
 binaryPackage {
@@ -260,6 +261,17 @@ binaryPackage {
     host="msys",
     url={
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/zlib/zlib-1.2.3-2/zlib-1.2.3-2-msys-1.0.13-dll.tar.lzma",
+    },
+}
+binaryPackage {
+    name="gettext-bin",
+    version="0.17",
+    release="2",
+    host="msys",
+    url={
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/gettext-0.17-2-msys-1.0.13-dev.tar.lzma",
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/gettext-0.17-2-msys-1.0.13-bin.tar.lzma",
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/libgettextpo-0.17-2-msys-dll-0.tar.lzma",
     },
 }
 
