@@ -6,12 +6,11 @@ srcPackage {
     },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-tar xzf /download/gc6.8.tar.gz -C $DEM_ROOT/src
-cd $DEM_ROOT/src/gc6.8
-#./configure --prefix=$DEM_ROOT/host/$DEM_TARGET --enable-threads=posix
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET --disable-threads
-#./configure --prefix=$DEM_ROOT/host/$DEM_TARGET --enable-threads=win32
+cd $CCS_TARGET_ROOT
+mkdir -p src
+tar xzf $CCS_DOWNLOAD/gc6.8.tar.gz -C src
+cd src/gc6.8
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-threads=posix
 make install
     ]=],
 }

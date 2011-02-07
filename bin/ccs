@@ -23,8 +23,8 @@ elseif string.match(CCS_HOST, "linux") then
     CCS_HOST=os_capture("echo $HOSTTYPE").."-linux"
 end
 local target_map={
-    ["msys"]="/usr",
-    ["cygwin"]="/usr",
+    ["i686-pc-msys"]="/usr",
+    ["i686-pc-cygwin"]="/usr",
     ["i686-pc-mingw32"]="/i686-pc-mingw32",
     ["x86_64-w64-mingw32"]="/x86_64-w64-mingw32",
 }
