@@ -17,7 +17,7 @@ cd src/SDL_mixer-1.2.11
 # Regenerate configuration files
 cat acinclude/* >aclocal.m4
 autoconf
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT -disable-shared
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
 make clean install
     ]=],
 }
