@@ -9,8 +9,8 @@ srcPackage {
     },
     sh=[=[
 set -x
+mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
-mkdir -p src
 tar xjf $CCS_DOWNLOAD/libvorbis-1.3.2.tar.bz2 -C src
 cd src/libvorbis-1.3.2
 ./configure --prefix=$CCS_TARGET_ROOT && make install

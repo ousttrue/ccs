@@ -1,4 +1,4 @@
-#!/usr/bin/env lua
+#!/usr/bin/lua
 
 local function os_capture(cmd)
     local f=assert(io.popen(cmd, 'r'))
@@ -18,7 +18,9 @@ if not CCS_HOST or CCS_HOST=='' then
     CCS_HOST=os_capture("echo $OSTYPE")
 end
 if CCS_HOST=="msys" then
-    --
+    CCS_HOST="i686-pc-msys"
+elseif CCS_HOST=="cygwin" then
+    CCS_HOST="i686-pc-cygwin"
 elseif string.match(CCS_HOST, "linux") then
     CCS_HOST=os_capture("echo $HOSTTYPE").."-linux"
 end
@@ -422,7 +424,7 @@ local BinaryPackage=newClass("BinaryPackage", function(self, t)
 end, Package)
 
 function BinaryPackage:eq(rhs)
-    return self.name==rhs.name and rhs.target==CCS_TARGET
+    return self.name==rhs.name and rhs.host==CCS_TARGET
 end
 
 function BinaryPackage:install()
@@ -506,6 +508,11 @@ end
 
 function SrcPackage:install()
     self:download()
+
+    if not os.execute("if [ `gcc -dumpmachine` != "..CCS_TARGET .." ];then true; else false; fi") then
+        print("no compiler for "..CCS_TARGET)
+        os.exit()
+    end
 
     local script=self.sh
     local target_key="sh_"..CCS_TARGET

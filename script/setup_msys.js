@@ -196,3 +196,9 @@ fso.CopyFile(ROOT_DIR+"/bin/lua_msys.exe", ROOT_DIR+"/bin/lua.exe");
 WScript.Echo("setup msys");
 exec(ROOT_DIR+"/bin/bash.exe --rcfile /script/msys_to_msys /script/setup.sh");
 
+mkdir(ROOT_DIR+"\\local");
+mkdir(ROOT_DIR+"\\local\\bin");
+mkdir(ROOT_DIR+"\\local\\include");
+mkdir(ROOT_DIR+"\\local\\lib");
+mkdir(ROOT_DIR+"\\local\\src");
+

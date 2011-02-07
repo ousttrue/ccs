@@ -1,6 +1,8 @@
 source $CCS_ROOT/script/ccsrc
 
-export CCS_TARGET=msys
+export CCS_DOWNLOAD=/c/download
+export CCS_TARGET=i686-pc-msys
+export CCS_TARGET_ROOT=/usr
 export LANG=ja_JP.SJIS
 
 exec /bin/bash -i

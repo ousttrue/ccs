@@ -10,12 +10,11 @@ srcPackage {
 
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=`basename http://www.codenix.com/~tolua/tolua++-1.0.93.tar.bz2`
-archive_dir=`extract /download/$archive $DEM_ROOT/src`
-cd $DEM_ROOT/src/$archive_dir
-DST=$DEM_ROOT/target/$DEM_TARGET
-
+archive_dir=`extract $CCS_DOWNLOAD/$archive src`
+cd src/$archive_dir
 cat << _PREMAKE4_ > premake4.lua
 solution "tolua++"
 configurations { "Release" }
@@ -25,6 +24,13 @@ do
     flags { "Optimize" }
     targetdir "Release"
 end
+includedirs {
+    "include", 
+    "$CCS_TARGET_ROOT/include",
+}
+libdirs {
+    "$CCS_TARGET_ROOT/lib",
+}
 
 project "tolua++"
 do
@@ -96,10 +102,13 @@ end
 _PREMAKE4_
 
 premake4 gmake
-make
-cp Release/tolua.exe $DST/bin/tolua++.exe
-cp Release/libtolua++.a $DST/lib
-cp include/tolua++.h $DST/include
+if make; then
+    cp Release/tolua.exe $CCS_TARGET_ROOT/bin/tolua++.exe
+    cp Release/libtolua++.a $CCS_TARGET_ROOT/lib
+    cp include/tolua++.h $CCS_TARGET_ROOT/include
+else
+    exit 1
+fi
     ]=],
 }
 

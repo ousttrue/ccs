@@ -7,22 +7,12 @@ srcPackage {
  
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=`basename http://jaist.dl.sourceforge.net/project/premake/Premake/4.3/premake-4.3-src.zip`
-archive_dir=`extract /download/$archive $DEM_ROOT/src`
-cd $DEM_ROOT/src/premake-4.3
-#./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make install
-(cd build/gmake.unix/; make)
-cp bin/release/premake4.exe $DEM_ROOT/host/$DEM_TARGET/bin
-    ]=],
-    sh_msys=[=[
-set -x
-mkdir -p $DEM_ROOT/src
-archive=`basename http://jaist.dl.sourceforge.net/project/premake/Premake/4.3/premake-4.3-src.zip`
-archive_dir=`extract /download/$archive $DEM_ROOT/src`
-cd $DEM_ROOT/src/premake-4.3
-#./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make install
+archive_dir=`extract $CCS_DOWNLOAD/$archive src`
+cd src/premake-4.3
 (cd build/gmake.windows/; make)
-cp bin/release/premake4.exe $DEM_ROOT/host/$DEM_TARGET/bin
+cp bin/release/premake4.exe $CCS_TARGET_ROOT/bin
     ]=],
 }

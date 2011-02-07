@@ -1,19 +1,19 @@
 toolchainPackage {
     name="toolchain",
-    host="msys",
-    target="msys",
+    host="i686-pc-msys",
+    target="i686-pc-msys",
     version="0.1",
     depends={
-        {"binutils", "msys", "msys"},
-        {"gcc", "msys", "msys"},
-        {"msys-core", "msys"},
-        {"w32api", "msys"},
+        {"binutils", "i686-pc-msys", "i686-pc-msys"},
+        {"gcc", "i686-pc-msys", "i686-pc-msys"},
+        {"msys-core", "i686-pc-msys"},
+        {"w32api", "i686-pc-msys"},
     },
 }
 toolchainPackage {
     name="binutils",
-    host="msys",
-    target="msys",
+    host="i686-pc-msys",
+    target="i686-pc-msys",
     version="2.19.51",
     release="3",
     url={
@@ -22,17 +22,18 @@ toolchainPackage {
 }
 toolchainPackage {
     name="gcc",
-    host="msys",
-    target="msys",
+    host="i686-pc-msys",
+    target="i686-pc-msys",
     version="3.4.3",
     release="3",
     url={
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/gcc/gcc-3.4.4-3/gcc-3.4.4-3-msys-1.0.13-bin.tar.lzma",
     },
+    post="(cd /usr/bin && cp -i gcc.exe cc.exe)"
 }
 binaryPackage {
     name="msys-core",
-    host="msys",
+    host="i686-pc-msys",
     version="1.0.16",
     release="1",
     url={
@@ -41,7 +42,7 @@ binaryPackage {
 }
 binaryPackage {
     name="w32api",
-    host="msys",
+    host="i686-pc-msys",
     version="3.14",
     release="3",
     url={
