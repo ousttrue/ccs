@@ -296,7 +296,7 @@ function Package:to_s()
 end
 
 function Package:eq(rhs)
-    return self.name==rhs.name and self.host==rhs.host
+    return self.name==rhs.name and (self.host==rhs.host or self.host==CCS_TARGET)
 end
 
 function Package:lt(rhs)
@@ -509,7 +509,7 @@ end
 function SrcPackage:install()
     self:download()
 
-    if not os.execute("if [ `gcc -dumpmachine` != "..CCS_TARGET .." ];then true; else false; fi") then
+    if os.execute("if [ `gcc -dumpmachine` = "..CCS_TARGET .." ];then true; else false; fi")~=0 then
         print("no compiler for "..CCS_TARGET)
         os.exit()
     end

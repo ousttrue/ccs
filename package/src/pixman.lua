@@ -4,15 +4,13 @@ srcPackage {
     url={
         "http://cairographics.org/releases/pixman-0.21.4.tar.gz"
     },
-    depends={
-        {"pkg-config", "msys"},
-    },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=`basename http://cairographics.org/releases/pixman-0.21.4.tar.gz`
-archive_dir=`extract /download/$archive $DEM_ROOT/src`
-cd $DEM_ROOT/src/$archive_dir
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make install
+archive_dir=`extract $CCS_DOWNLOAD/$archive src`
+cd src/$archive_dir
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
     ]=],
 }

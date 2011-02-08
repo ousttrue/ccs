@@ -1,0 +1,11 @@
+--- Makefile.gcc.orig	2011-02-09 01:50:09 +0900
++++ Makefile.gcc	2011-02-09 01:49:27 +0900
+@@ -30,7 +30,7 @@
+ #
+ # Set to 1 if shared object needs to be installed
+ #
+-SHARED_MODE=0
++SHARED_MODE=1
+ 
+ #LOC = -DASMV
+ #LOC = -DDEBUG -g

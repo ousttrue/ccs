@@ -8,10 +8,11 @@ srcPackage {
  
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=`basename http://download.savannah.gnu.org/releases/freetype/freetype-2.4.4.tar.bz2`
-archive_dir=`extract /download/$archive $DEM_ROOT/src`
-cd $DEM_ROOT/src/$archive_dir
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET && make install
+archive_dir=`extract $CCS_DOWNLOAD/$archive src`
+cd src/$archive_dir
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
     ]=],
 }
