@@ -1,5 +1,4 @@
 SHAREDLIB = libz.la
-SHARED_MODE=1
 
 PREFIX =
 CC = $(PREFIX)gcc
@@ -25,7 +24,6 @@ INSTALL = $(CP)
 RM = rm -f
 
 prefix = /usr/local
-exec_prefix = $(prefix)
 
 OBJS = adler32.lo compress.lo crc32.lo deflate.lo gzclose.lo gzlib.lo gzread.lo gzwrite.lo infback.lo inffast.lo inflate.lo inftrees.lo trees.lo uncompr.lo zutil.lo
 
@@ -46,14 +44,14 @@ zlibrc.lo: win32/zlib1.rc
 .PHONY: install uninstall clean
 
 install: zlib.h zconf.h $(SHAREDLIB)
-	-@mkdir -p $(INCLUDE_PATH)
-	-@mkdir -p $(LIBRARY_PATH)
-	-if [ "$(SHARED_MODE)" = "1" ]; then \
-		mkdir -p $(BINARY_PATH); \
-		$(INSTALL) $(SHAREDLIB) $(LIBRARY_PATH); \
-	fi
-	-$(INSTALL) zlib.h $(INCLUDE_PATH)
-	-$(INSTALL) zconf.h $(INCLUDE_PATH)
+	-@mkdir -p $(prefix)/bin
+	-@mkdir -p $(prefix)/include
+	 @mkdir -p $(prefix)/lib
+	 $(INSTALL) .libs/libz.dll $(prefix)/bin
+	 $(INSTALL) .libs/libz.dll.a $(prefix)/lib
+	 $(INSTALL) $(SHAREDLIB) $(prefix)/lib
+	-$(INSTALL) zlib.h $(prefix)/include
+	-$(INSTALL) zconf.h $(prefix)/include
 
 clean:
 	-$(RM) $(SHAREDLIB)
