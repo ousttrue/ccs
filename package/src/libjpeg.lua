@@ -6,11 +6,11 @@ srcPackage {
     },
     sh=[=[
 set -x
-cd $CCS_TARGET_ROOT/
-mkdir -p src
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=jpegsrc.v8c.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/jpeg-8c
-./configure --prefix=$CCS_TARGET_ROOT --host=$CCS_TARGET && make install
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
     ]=],
 }
