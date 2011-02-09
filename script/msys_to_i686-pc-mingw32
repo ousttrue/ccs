@@ -1,6 +1,7 @@
-source $CCS_ROOT/script/ccsrc
+source /script/ccsrc
 
-export CCS_DOWNLOAD=/c/download
+echo msys_to_i686-pc_mingw32
+
 export CCS_TARGET=i686-pc-mingw32
 export CCS_TARGET_ROOT=/$CCS_TARGET
 export PATH="$CCS_TARGET_ROOT/local/bin:$CCS_TARGET_ROOT/bin:$PATH"

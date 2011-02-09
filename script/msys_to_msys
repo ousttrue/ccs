@@ -1,4 +1,4 @@
-source $CCS_ROOT/script/ccsrc
+source /script/ccsrc
 
 export CCS_DOWNLOAD=/c/download
 export CCS_TARGET=i686-pc-msys

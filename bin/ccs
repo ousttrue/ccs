@@ -296,7 +296,7 @@ function Package:to_s()
 end
 
 function Package:eq(rhs)
-    return self.name==rhs.name and (self.host==rhs.host or self.host==CCS_TARGET)
+    return self.name==rhs.name and self.host==rhs.host and self.target==rhs.target
 end
 
 function Package:lt(rhs)
@@ -423,10 +423,6 @@ local BinaryPackage=newClass("BinaryPackage", function(self, t)
     end
 end, Package)
 
-function BinaryPackage:eq(rhs)
-    return self.name==rhs.name and rhs.host==CCS_TARGET
-end
-
 function BinaryPackage:install()
     self:download(function(archive)
         extract(CCS_DOWNLOAD.."/"..archive, CCS_TARGET_ROOT)
@@ -509,9 +505,16 @@ end
 function SrcPackage:install()
     self:download()
 
-    if os.execute("if [ `gcc -dumpmachine` = "..CCS_TARGET .." ];then true; else false; fi")~=0 then
-        print("no compiler for "..CCS_TARGET)
-        os.exit()
+    if CCS_TARGET=="i686-pc-mingw32" then
+        if os.execute("if [ `gcc -dumpmachine` = mingw32 ];then true; else false; fi")~=0 then
+            print("no compiler for "..CCS_TARGET)
+            os.exit()
+        end
+    else
+        if os.execute("if [ `gcc -dumpmachine` = "..CCS_TARGET .." ];then true; else false; fi")~=0 then
+            print("no compiler for "..CCS_TARGET)
+            os.exit()
+        end
     end
 
     local script=self.sh
@@ -673,14 +676,32 @@ function Manager:show_list(hosts)
     end
 end
 
-function Manager:find(target)
+function Manager:find(name)
+    return self:find_package(
+    Package{
+        name=name,
+        host=CCS_HOST,
+        target=CCS_TARGET,
+    }) or self:find_package(
+    Package{
+        name=name,
+        host=CCS_TARGET,
+    }) or self:find_package(
+    Package{
+        name=name,
+        host=CCS_HOST,
+    })
+end
+
+function Manager:find_package(p)
+    --print("find_package:", p:to_s())
     local founds={}
-    local packages=self.packages[target.name]
+    local packages=self.packages[p.name]
     if packages then
         for i, v in ipairs(packages) do
             class=v:get_class()
-            --if class==SrcPackage or v==target then
-            if class==SrcPackage or v:eq(target) then
+            --if class==SrcPackage or v==p then
+            if class==SrcPackage or v:eq(p) then
                 table.insert(founds, v)
             end
         end
@@ -695,13 +716,12 @@ function Manager:find(target)
     end
 end
 
-function Manager:install(target)
-    local t=self:find(Package{name=target, host=CCS_HOST, target=CCS_TARGET})
+function Manager:install(name)
+    local t=self:find(name)
     if not t then
-        print("not found", target)
+        print("not found", name)
         os.exit()
     end
-
     -- dependency
     print("resolve dependency...")
     root=Node(t)

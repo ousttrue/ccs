@@ -36,6 +36,7 @@ srcPackage {
 set -x
 mkdir $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
+rm -rf src/libpng-1.4.5
 tar xJf $CCS_DOWNLOAD/libpng-1.4.5.tar.xz -C src
 cd src/libpng-1.4.5
 ./configure --prefix=$CCS_TARGET_ROOT && make install
