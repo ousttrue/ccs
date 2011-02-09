@@ -41,7 +41,7 @@ var ROOT_DIR=splited.join("\\");
 var SCRIPT_DIR=ROOT_DIR+"\\script";
 var PACKAGE_DIR=ROOT_DIR+"\\package";
 var MINGW_DIR="C:\\i686-pc-mingw32";
-var MINGW64_DIR="C:\\x86_64-pc-mingw32";
+var MINGW64_DIR="C:\\x86_64-w64-mingw32";
 
 function each(o, f){
     for(var key in o){
