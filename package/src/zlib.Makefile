@@ -21,7 +21,6 @@ INSTALL = $(CP)
 RM = rm -f
 
 prefix = /usr/local
-exec_prefix = $(prefix)
 
 OBJS = adler32.lo compress.lo crc32.lo deflate.lo gzclose.lo gzlib.lo gzread.lo gzwrite.lo infback.lo inffast.lo inflate.lo inftrees.lo trees.lo uncompr.lo zutil.lo
 
@@ -31,42 +30,33 @@ all: $(SHAREDLIB)
 .c.lo:
 	libtool --mode=compile --tag=CC $(CC) $(CFLAGS) $(EXTRA_CFLAGS) -c -o $@ $<
 
+$(SHAREDLIB): win32/zlib.def $(OBJS) zlibrc.lo
+	libtool --mode=link --tag=CC $(CC) $(LDFLAGS) -o $@ win32/zlib.def $(OBJS) zlibrc.lo -no-undefined -rpath /i686-pc-mingw32/local/lib -avoid-version
+
 zlibrc.lo: win32/zlib1.rc
 	libtool --mode=compile --tag=CC $(RC) $(RCFLAGS) -o $@ win32/zlib1.rc
 
-$(SHAREDLIB): win32/zlib.def $(OBJS) zlibrc.lo
-	libtool --mode=link --tag=CC $(CC) $(LDFLAGS) -o $@ win32/zlib.def $(OBJS) zlibrc.lo -no-undefined -avoid-version -rpath /x86_64-w64-mingw32/local/lib
 
-
+# BINARY_PATH, INCLUDE_PATH and LIBRARY_PATH must be set.
 .PHONY: install uninstall clean
 
-install: zlib.h zconf.h $(STATICLIB) $(IMPLIB)
-	-@mkdir -p $(INCLUDE_PATH)
-	-@mkdir -p $(LIBRARY_PATH)
-	-if [ "$(SHARED_MODE)" = "1" ]; then \
-		mkdir -p $(BINARY_PATH); \
-		$(INSTALL) $(SHAREDLIB) $(BINARY_PATH); \
-		$(INSTALL) $(IMPLIB) $(LIBRARY_PATH); \
-	fi
-	-$(INSTALL) zlib.h $(INCLUDE_PATH)
-	-$(INSTALL) zconf.h $(INCLUDE_PATH)
-	-$(INSTALL) $(STATICLIB) $(LIBRARY_PATH)
-
-uninstall:
-	-if [ "$(SHARED_MODE)" = "1" ]; then \
-		$(RM) $(BINARY_PATH)/$(SHAREDLIB); \
-		$(RM) $(LIBRARY_PATH)/$(IMPLIB); \
-	fi
-	-$(RM) $(INCLUDE_PATH)/zlib.h
-	-$(RM) $(INCLUDE_PATH)/zconf.h
-	-$(RM) $(LIBRARY_PATH)/$(STATICLIB)
+install: zlib.h zconf.h $(SHAREDLIB)
+	-@mkdir -p $(prefix)/bin
+	-@mkdir -p $(prefix)/include
+	 @mkdir -p $(prefix)/lib
+	 $(INSTALL) .libs/libz.dll $(prefix)/bin
+	 $(INSTALL) .libs/libz.dll.a $(prefix)/lib
+	 $(INSTALL) $(SHAREDLIB) $(prefix)/lib
+	-$(INSTALL) zlib.h $(prefix)/include
+	-$(INSTALL) zconf.h $(prefix)/include
 
 clean:
 	-$(RM) $(SHAREDLIB)
+	-$(RM) *.lo
 	-$(RM) *.exe
-	-$(RM) *.lo *.o
-	-$(RM) *.la *.a
-	-$(RM) -r .libs
+	-$(RM) *.dll
+	-$(RM) *.a
+	 $(RM) -r .libs
 
 adler32.lo: zlib.h zconf.h
 compress.lo: zlib.h zconf.h

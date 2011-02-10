@@ -43,6 +43,11 @@ var PACKAGE_DIR=ROOT_DIR+"\\package";
 var MINGW_DIR="C:\\i686-pc-mingw32";
 var MINGW64_DIR="C:\\x86_64-w64-mingw32";
 
+function echo(l)
+{
+    WScript.Echo(l);
+}
+
 function each(o, f){
     for(var key in o){
         f(o[key]);
@@ -60,30 +65,30 @@ function exec(cmd){
 
 function extract(base, lzma)
 {
-    WScript.Echo("extract: "+lzma);
+    echo("extract: "+lzma);
 
     exec(sevenzip+' e -y '+lzma);
 
     var splited=lzma.split('.');
     splited.pop();
     var tar=splited.join('.');
-    //WScript.Echo("extract: "+tar);
+    //echo("extract: "+tar);
     var cmd=sevenzip+' x -y -o'+base+' '+tar;
-    //WScript.Echo(cmd);
+    //echo(cmd);
     exec(cmd);
 }
 
 function download(url, dst){
-    WScript.Echo("download: "+url);
+    echo("download: "+url);
     var http = new ActiveXObject("Msxml2.XMLHTTP");
     http.Open("GET", url, false);
     http.Send(null);
     if(http.Status!=200){
-        WScript.Echo("fail to download");
+        echo("fail to download");
         WScript.Quit();
     }
 
-    //WScript.Echo("write to: "+dst);
+    //echo("write to: "+dst);
     var stream = WScript.CreateObject("Adodb.Stream");
     stream.Type=1;
     stream.Open();
@@ -110,19 +115,19 @@ each(ARCHIVES, function(path){
     }
     extract(ROOT_DIR, dst);
 });
-WScript.Echo("");
+echo("");
 
 // etc/fstab
 function createFstab(){
     var io=fso.CreateTextFile(ROOT_DIR+"\\etc\\fstab", true);
-    WScript.Echo("create: /etc/fstab");
+    echo("create: /etc/fstab");
 
     function writeFstab(io, src, dst)
     {
         mkdir(src);
         mkdir(ROOT_DIR+dst);
         var line=src.replace("\\", "/")+"\t"+dst;
-        WScript.Echo(line);
+        echo(line);
         io.WriteLine(line);
     }
     writeFstab(io, MINGW_DIR, "/i686-pc-mingw32");
@@ -134,7 +139,7 @@ createFstab();
 // ccs.lua
 function create_ccsrc(){
     var io=fso.CreateTextFile(SCRIPT_DIR+"\\ccsrc", true);
-    WScript.Echo("create: ccsrc.lua");
+    echo("create: ccsrc.lua");
     io.WriteLine('if [ -e "/etc/profile" ];then');
     io.WriteLine('source "/etc/profile"');
     io.WriteLine('fi');
@@ -151,7 +156,7 @@ function create_ccsrc(){
 create_ccsrc();
 
 // msys_to_i686-pc-mingw32
-WScript.Echo("create: msys_to_i686-pc-mingw32.lnk");
+echo("create: msys_to_i686-pc-mingw32.lnk");
 var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_i686-pc-mingw32.lnk");
 sc.TargetPath=ROOT_DIR+"\\bin\\bash";
 sc.Arguments="/script/msys_to_i686-pc-mingw32";
@@ -159,14 +164,14 @@ sc.IconLocation=ROOT_DIR+"\\msys.ico";
 sc.Save();
 
 // msys_to_i686-pc-mingw32(mintty)
-WScript.Echo("create: msys_to_i686-pc-mingw32(mintty).lnk");
+echo("create: msys_to_i686-pc-mingw32(mintty).lnk");
 var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_i686-pc-mingw32(mintty).lnk");
 sc.TargetPath=ROOT_DIR+"\\bin\\mintty.exe";
 sc.Arguments="/script/msys_to_i686-pc-mingw32";
 sc.Save();
 
 // msys_to_msys
-WScript.Echo("create: msys_to_msys.lnk");
+echo("create: msys_to_msys.lnk");
 var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_msys.lnk");
 sc.TargetPath=ROOT_DIR+"\\bin\\bash";
 sc.Arguments="/script/msys_to_msys ";
@@ -174,7 +179,7 @@ sc.IconLocation=ROOT_DIR+"\\m.ico";
 sc.Save();
 
 // msys_to_x86_64-w64-mingw32
-WScript.Echo("create: msys_to_x86_64-w64-mingw32.lnk");
+echo("create: msys_to_x86_64-w64-mingw32.lnk");
 var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_x86_64-w64-mingw32.lnk");
 sc.TargetPath=ROOT_DIR+"\\bin\\bash";
 sc.Arguments="/script/msys_to_x86_64-w64-mingw32 ";
@@ -182,19 +187,23 @@ sc.Arguments="/script/msys_to_x86_64-w64-mingw32 ";
 sc.Save();
 
 // msys_to_x86_64-w64-mingw32(mintty)
-WScript.Echo("create: msys_to_x86_64-w64-mingw32(mintty).lnk");
+echo("create: msys_to_x86_64-w64-mingw32(mintty).lnk");
 var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_x86_64-w64-mingw32(mintty).lnk");
 sc.TargetPath=ROOT_DIR+"\\bin\\mintty.exe";
 sc.Arguments="/script/msys_to_x86_64-w64-mingw32";
 sc.Save();
 
-WScript.Echo("");
+echo("");
 
-WScript.Echo("copy lua interpreter");
-fso.CopyFile(ROOT_DIR+"/bin/lua_msys.exe", ROOT_DIR+"/bin/lua.exe");
+echo("copy lua interpreter");
+fso.CopyFile(ROOT_DIR+"/script/lua_msys.exe", ROOT_DIR+"/bin/lua.exe");
 
-WScript.Echo("setup msys");
-exec(ROOT_DIR+"/bin/bash.exe --rcfile /script/msys_to_msys /script/setup.sh");
+echo("setup msys");
+var results=exec(ROOT_DIR+"/bin/bash.exe --rcfile /script/msys_to_msys /script/setup_msys.sh");
+for(var i in results){
+    var line=results[i];
+    echo(line);
+}
 
 mkdir(ROOT_DIR+"\\local");
 mkdir(ROOT_DIR+"\\local\\bin");

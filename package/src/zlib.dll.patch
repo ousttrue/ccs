@@ -1,6 +1,12 @@
---- Makefile.gcc.orig	2011-02-09 01:50:09 +0900
-+++ Makefile.gcc	2011-02-09 01:49:27 +0900
-@@ -30,7 +30,7 @@
+--- Makefile.gcc.orig	2011-02-09 16:51:30 +0900
++++ Makefile.gcc	2011-02-09 16:51:22 +0900
+@@ -25,12 +25,12 @@
+ 
+ STATICLIB = libz.a
+ SHAREDLIB = zlib1.dll
+-IMPLIB    = libzdll.a
++IMPLIB    = libz.dll.a
+ 
  #
  # Set to 1 if shared object needs to be installed
  #
