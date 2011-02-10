@@ -199,7 +199,7 @@ echo("copy lua interpreter");
 fso.CopyFile(ROOT_DIR+"/script/lua_msys.exe", ROOT_DIR+"/bin/lua.exe");
 
 echo("setup msys");
-var results=exec(ROOT_DIR+"/bin/bash.exe --rcfile /script/msys_to_msys /script/setup_msys.sh");
+var results=exec(ROOT_DIR+"/bin/bash.exe /script/msys_to_msys true");
 for(var i in results){
     var line=results[i];
     echo(line);
