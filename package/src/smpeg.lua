@@ -10,6 +10,7 @@ srcPackage {
     },
     sh=[=[
 set -x
+export LDFLAGS="$LDFLAGS -no-undefined"
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 tar xzf $CCS_DOWNLOAD/smpeg-0.4.5.tar.gz -C src

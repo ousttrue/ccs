@@ -1,7 +1,6 @@
 srcPackage {
     name="freetype",
     version="2.4.4",
-    host="msys",
     url={
         "http://download.savannah.gnu.org/releases/freetype/freetype-2.4.4.tar.bz2"
     },

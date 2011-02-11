@@ -205,6 +205,7 @@ for(var i in results){
     echo(line);
 }
 
+mkdir(ROOT_DIR+"\\tmp");
 mkdir(ROOT_DIR+"\\local");
 mkdir(ROOT_DIR+"\\local\\bin");
 mkdir(ROOT_DIR+"\\local\\include");
