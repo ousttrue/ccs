@@ -27,6 +27,9 @@ srcPackage {
     url={
         "http://zlib.net/zlib-1.2.5.tar.gz",
     },
+    depends={
+        "libtool",
+    },
     ["sh"]=sh_configure,
     ["sh_msys"]=sh_win,
     ["sh_i686-pc-mingw32"]=sh_win,

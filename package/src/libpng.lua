@@ -39,7 +39,8 @@ cd $CCS_TARGET_ROOT
 rm -rf src/libpng-1.4.5
 tar xJf $CCS_DOWNLOAD/libpng-1.4.5.tar.xz -C src
 cd src/libpng-1.4.5
-./configure --prefix=$CCS_TARGET_ROOT && make install
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+make install
 if [ $? -ne 0 ];then
     exit 1
 fi

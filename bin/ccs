@@ -498,6 +498,10 @@ local SrcPackage=newClass("SrcPackage", function(self, t)
     self.host="src"
 end, Package)
 
+function SrcPackage:eq(rhs)
+    return self.name==rhs.name
+end
+
 function SrcPackage:to_s()
     return "*"..self.name.."-"..self.version.."*"
 end
@@ -524,6 +528,8 @@ function SrcPackage:install()
     end
     execute_script(script, {
         CCS_TARGET_ROOT=CCS_TARGET_ROOT.."/local",
+        LDFLAGS="-L"..CCS_TARGET_ROOT.."/local/lib",
+        CFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
         CCS_DOWNLOAD=CCS_DOWNLOAD,
         CCS_URL=self.url[0],
     })
@@ -764,21 +770,17 @@ function Manager:resolve_dependencies(node)
     local depends=p["depends_"..CCS_TARGET] or p.depends
     if depends then
         for i, v in ipairs(depends) do
-            local t=nil
             local name=nil
             if type(v)=="string" then
-                t=Package{name=v, host=CCS_HOST}
                 name=v
             elseif type(v)=="table" then
                 if #v==3 then
-                    t=ToolchainPackage{name=v[1], host=v[2], target=v[3]}
                     name=v[1]
                 elseif #v==2 then
-                    t=BinaryPackage{name=v[1], host=v[2]}
                     name=v[1]
                 end
             end
-            local p=self:find_package(t)
+            local p=self:find(name)
             local child=nil
             if p then
                 child=Node(p)
@@ -787,56 +789,6 @@ function Manager:resolve_dependencies(node)
                 child=Node(EmptyPackage{name=name})
             end
             node:add_child(child)
-        end
-    end
-end
-
-function Manager:toolchain()
-    local t=nil
-    for i, v in ipairs(self.packages['toolchain']) do
-        if v.target==CCS_TARGET then
-            t=v
-            break
-        end
-    end
-    if not t then
-        print("not found", target)
-        os.exit()
-    end
-
-    -- dependency
-    print("resolve dependency...")
-    root=Node(t)
-    self:resolve_dependencies(root)
-    --root:show()
-
-    -- create install queue
-    local queue=root:to_queue()
-    print(string.format("## install queue %d ##", #queue))
-    local notFound=false
-    for i, v in ipairs(queue) do
-        print(v:to_s())
-        if v:get_class()==EmptyPackage then
-            notFound=true
-        end
-    end
-    print(string.format("## install queue %d ##", #queue))
-
-    if notFound then
-        print("not exist package")
-        os.exit()
-    end
-    print()
-    for i, v in ipairs(queue) do
-        print(v:to_s())
-        if v:isInstalled() then
-            print("installed")
-        else
-            v:install()
-            if v.post then
-                execute_script(v.post)
-            end
-            v:register()
         end
     end
 end

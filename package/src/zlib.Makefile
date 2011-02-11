@@ -20,8 +20,6 @@ CP = cp -fp
 INSTALL = $(CP)
 RM = rm -f
 
-prefix = /usr/local
-
 OBJS = adler32.lo compress.lo crc32.lo deflate.lo gzclose.lo gzlib.lo gzread.lo gzwrite.lo infback.lo inffast.lo inflate.lo inftrees.lo trees.lo uncompr.lo zutil.lo
 
 all: $(SHAREDLIB)
@@ -31,7 +29,7 @@ all: $(SHAREDLIB)
 	libtool --mode=compile --tag=CC $(CC) $(CFLAGS) $(EXTRA_CFLAGS) -c -o $@ $<
 
 $(SHAREDLIB): win32/zlib.def $(OBJS) zlibrc.lo
-	libtool --mode=link --tag=CC $(CC) $(LDFLAGS) -o $@ win32/zlib.def $(OBJS) zlibrc.lo -no-undefined -rpath /i686-pc-mingw32/local/lib -avoid-version
+	libtool --mode=link --tag=CC $(CC) $(LDFLAGS) -o $@ win32/zlib.def $(OBJS) zlibrc.lo -no-undefined -rpath /$(CCS_TARGET_ROOT)/lib -avoid-version
 
 zlibrc.lo: win32/zlib1.rc
 	libtool --mode=compile --tag=CC $(RC) $(RCFLAGS) -o $@ win32/zlib1.rc
@@ -41,14 +39,15 @@ zlibrc.lo: win32/zlib1.rc
 .PHONY: install uninstall clean
 
 install: zlib.h zconf.h $(SHAREDLIB)
-	-@mkdir -p $(prefix)/bin
-	-@mkdir -p $(prefix)/include
-	 @mkdir -p $(prefix)/lib
-	 $(INSTALL) .libs/libz.dll $(prefix)/bin
-	 $(INSTALL) .libs/libz.dll.a $(prefix)/lib
-	 $(INSTALL) $(SHAREDLIB) $(prefix)/lib
-	-$(INSTALL) zlib.h $(prefix)/include
-	-$(INSTALL) zconf.h $(prefix)/include
+	-@mkdir -p $(CCS_TARGET_ROOT)/bin
+	-@mkdir -p $(CCS_TARGET_ROOT)/include
+	 @mkdir -p $(CCS_TARGET_ROOT)/lib
+	 $(INSTALL) .libs/libz.dll $(CCS_TARGET_ROOT)/bin
+	 $(INSTALL) .libs/libz.dll.a $(CCS_TARGET_ROOT)/lib
+	 $(INSTALL) .libs/libz.a $(CCS_TARGET_ROOT)/lib
+	 $(INSTALL) $(SHAREDLIB) $(CCS_TARGET_ROOT)/lib
+	-$(INSTALL) zlib.h $(CCS_TARGET_ROOT)/include
+	-$(INSTALL) zconf.h $(CCS_TARGET_ROOT)/include
 
 clean:
 	-$(RM) $(SHAREDLIB)
