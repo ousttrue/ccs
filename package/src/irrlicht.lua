@@ -6,9 +6,10 @@ srcPackage {
     },
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-unzip -qo -d $DEM_ROOT/src /download/irrlicht-1.7.2.zip
-cd $DEM_ROOT/src/irrlicht-1.7.2/source/Irrlicht
-make CXXFLAGS="-D__GNUWIN32__ $CXXFLAGS"
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
+unzip -qo -d src $CCS_DOWNLOAD/irrlicht-1.7.2.zip
+cd src/irrlicht-1.7.2/source/Irrlicht
+make CXXFLAGS="-D__GNUWIN32__ -DCONSOLE_FULLSCREEN_MODE=1 $CXXFLAGS $CFLAGS"
     ]=],
 }

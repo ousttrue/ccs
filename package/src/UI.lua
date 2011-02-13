@@ -1,18 +1,18 @@
 srcPackage {
-    name="libtheora",
-    version="1.1.1",
+    name="UI",
+    version="0",
     url={
-        "http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2"
+        "http://www.bramstein.com/projects/gui/UI.zip"
     },
  
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
-archive=libtheora-1.1.1.tar.bz2
+archive=UI.zip
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
-cd src/$archive_dir
+cd src/UI.xcodeproj
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
-make install -j4
+make install
     ]=],
 }

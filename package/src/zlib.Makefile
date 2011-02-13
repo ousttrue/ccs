@@ -42,8 +42,8 @@ install: zlib.h zconf.h $(SHAREDLIB)
 	-@mkdir -p $(CCS_TARGET_ROOT)/bin
 	-@mkdir -p $(CCS_TARGET_ROOT)/include
 	 @mkdir -p $(CCS_TARGET_ROOT)/lib
-	 $(INSTALL) .libs/libz.dll $(CCS_TARGET_ROOT)/bin
-	 $(INSTALL) .libs/libz.dll.a $(CCS_TARGET_ROOT)/lib
+	 $(INSTALL) .libs/*.dll $(CCS_TARGET_ROOT)/bin
+	 $(INSTALL) .libs/*.dll.a $(CCS_TARGET_ROOT)/lib
 	 $(INSTALL) .libs/libz.a $(CCS_TARGET_ROOT)/lib
 	 $(INSTALL) $(SHAREDLIB) $(CCS_TARGET_ROOT)/lib
 	-$(INSTALL) zlib.h $(CCS_TARGET_ROOT)/include

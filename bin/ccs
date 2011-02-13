@@ -530,6 +530,7 @@ function SrcPackage:install()
         CCS_TARGET_ROOT=CCS_TARGET_ROOT.."/local",
         LDFLAGS="-L"..CCS_TARGET_ROOT.."/local/lib",
         CFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
+        CXXFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
         CCS_DOWNLOAD=CCS_DOWNLOAD,
         CCS_URL=self.url[0],
     })
@@ -841,12 +842,13 @@ elseif cmd=="create" then
         f:write([==[ 
     sh=[=[
 set -x
-cd $CCS_ROOT
-mkdir -p src
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=`basename $CCS_URL`
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+make install -j4
     ]=],
 ]==]
         )

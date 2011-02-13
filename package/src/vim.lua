@@ -7,17 +7,18 @@ srcPackage {
     depends_msys={
         "termcap", "libiconv"
     },
-    sh_msys=[=[
+    sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
-tar xjf $DEM_ROOT/download/vim-7.3.tar.bz2 -C $DEM_ROOT/src
-cd $DEM_ROOT/src/vim73
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET --enable-multibyte --with-tlib=termcap --disable-gui
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
+tar xjf $CCS_DOWNLOAD/vim-7.3.tar.bz2 -C src
+cd src/vim73
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-multibyte --with-tlib=termcap
 make 
 mv src/auto/{pathdef.c,pathdef.c.orig}
 sed -e 's/\r//' src/auto/pathdef.c.orig > src/auto/pathdef.c
 make 
 sed -e 's/\r//' src/auto/pathdef.c.orig > src/auto/pathdef.c
-make install
+make install -j4
     ]=]
 }

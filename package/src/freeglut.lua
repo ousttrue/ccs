@@ -7,10 +7,14 @@ srcPackage {
  
     sh=[=[
 set -x
-mkdir -p $DEM_ROOT/src
+export LDFLAGS="$LDFLAGS -lopengl32"
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=`basename http://jaist.dl.sourceforge.net/project/freeglut/freeglut/freeglut-2.6.0.tar.gz`
-archive_dir=`extract /download/$archive $DEM_ROOT/src`
-cd $DEM_ROOT/src/$archive_dir
-./configure --prefix=$DEM_ROOT/host/$DEM_TARGET --without-x && make install
+archive_dir=`extract $CCS_DOWNLOAD/$archive src`
+cd src/$archive_dir
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --without-x 
+perl -i.bak -pe 's/\s+-l(opengl32|gdi32|winmm)/ -Wl,-l\1/g' src/Makefile
+make install
     ]=],
 }

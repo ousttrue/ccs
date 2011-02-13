@@ -64,7 +64,7 @@ binaryPackage {
     },
 }
 binaryPackage {
-    name="libiconv",
+    name="iconv-bin",
     host="i686-pc-msys",
     version="1.13.1",
     release="2",
@@ -272,6 +272,25 @@ binaryPackage {
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/gettext-0.17-2-msys-1.0.13-dev.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/gettext-0.17-2-msys-1.0.13-bin.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/libgettextpo-0.17-2-msys-dll-0.tar.lzma",
+    },
+}
+binaryPackage {
+    name="regex",
+    version="1.20090805",
+    release="2",
+    host="i686-pc-msys",
+    url={
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/regex/regex-1.20090805-2/libregex-1.20090805-2-msys-1.0.13-dev.tar.lzma",
+        --"http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/regex/regex-1.20090805-2/libregex-1.20090805-2-msys-1.0.13-dll-1.tar.lzma",
+    },
+}
+binaryPackage {
+    name="coreutils",
+    version="5.97",
+    release="3",
+    host="i686-pc-msys",
+    url={
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/coreutils/coreutils-5.97-3/coreutils-5.97-3-msys-1.0.13-bin.tar.lzma",
     },
 }
 

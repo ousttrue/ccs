@@ -1,18 +1,18 @@
 srcPackage {
-    name="libtheora",
-    version="1.1.1",
+    name="turska",
+    version="2.0.0",
     url={
-        "http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2"
+        "http://turska.googlecode.com/files/turska_2_0_0.zip"
     },
  
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
-archive=libtheora-1.1.1.tar.bz2
+archive=turska_2_0_0.zip
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
-cd src/$archive_dir
+cd src/turs2
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
-make install -j4
+make install
     ]=],
 }
