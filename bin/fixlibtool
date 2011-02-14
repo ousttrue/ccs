@@ -1,0 +1,4 @@
+#!/bin/sh
+set -x
+find . -name libtool | xargs perl -i.bak -pe 's/^\s*(dependency_libs=.*)`/\1|perl -pe "s\/\\\/+\/\\\/\/"`/'
+
