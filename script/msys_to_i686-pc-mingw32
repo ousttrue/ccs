@@ -6,5 +6,10 @@ export CCS_TARGET=i686-pc-mingw32
 export CCS_TARGET_ROOT=/$CCS_TARGET
 export PATH="$CCS_TARGET_ROOT/local/bin:$CCS_TARGET_ROOT/bin:$PATH"
 export LANG=ja_JP.SJIS
+export PKG_CONFIG_PATH="$CCS_TARGET_ROOT/local/lib/pkgconfig"
 
-exec /bin/bash -i
+if [ $# -eq 0 ];then
+    exec /bin/bash -i
+else
+    $*
+fi

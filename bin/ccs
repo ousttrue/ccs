@@ -118,6 +118,7 @@ end
 
 local function execute_script(script, t)
     local tmpfile=os.tmpname()
+    --os.execute("touch "..tmpfile)
     local f=assert(io.open(tmpfile, "w"))
     f:write(script)
     f:close()
@@ -344,9 +345,7 @@ function Package:getHost()
 end
 
 function Package:getRegisterFile()
-    local file=CCS_TARGET_ROOT.."/installed/"..self.name
-    --print(file)
-    return file
+    return CCS_TARGET_ROOT.."/installed/"..self.name
 end
 
 function Package:isInstalled()
@@ -506,11 +505,15 @@ function SrcPackage:to_s()
     return "*"..self.name.."-"..self.version.."*"
 end
 
+function SrcPackage:getRegisterFile()
+    return CCS_TARGET_ROOT.."/local/installed/"..self.name
+end
+
 function SrcPackage:install()
     self:download()
 
     if CCS_TARGET=="i686-pc-mingw32" then
-        if os.execute("if [ `gcc -dumpmachine` = mingw32 ];then true; else false; fi")~=0 then
+        if os.execute("if [ `gcc -dumpmachine | perl -pe 's/\\s//g'` = mingw32 ];then true; else false; fi")~=0 then
             print("no compiler for "..CCS_TARGET)
             os.exit()
         end
@@ -649,10 +652,11 @@ list : display installed packages.
 toolchain : install compile toolchain.
 install {package}: install a package. 
 
+PATH: %s
 CCS_ROOT: %s
 CCS_TARGET_ROOT: %s
 CCS_DOWNLOAD: %s
-    ]=], CCS_ROOT, CCS_TARGET_ROOT, CCS_DOWNLOAD)
+    ]=], os.getenv("PATH"), CCS_ROOT, CCS_TARGET_ROOT, CCS_DOWNLOAD)
 end
 
 function Manager:show_list(hosts)

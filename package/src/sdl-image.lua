@@ -16,7 +16,8 @@ archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 #patch < /package/src/sdl-image-libpng-15.patch
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
-cp $CCS_ROOT/script/src/sdl-image.libtool .
+#cp $CCS_ROOT/script/src/sdl-image.libtool .
+fixlibtool
 make install
     ]=],
 }

@@ -14,7 +14,7 @@ archive=`basename http://jaist.dl.sourceforge.net/project/freeglut/freeglut/free
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --without-x 
-perl -i.bak -pe 's/\s+-l(opengl32|gdi32|winmm)/ -Wl,-l\1/g' src/Makefile
+fixlibtool
 make install
     ]=],
 }

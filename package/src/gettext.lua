@@ -9,11 +9,13 @@ srcPackage {
     },
     sh=[=[
 set -x
-cd $CCS_ROOT
-mkdir -p src
-archive=`basename http://ftp.gnu.org/pub/gnu/gettext/gettext-0.18.1.1.tar.gz`
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
+archive=gettext-0.18.1.1.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-LDFLAGS=-L$CCS_TARGET_ROOT/lib CFLAGS=-I$CCS_TARGET_ROOT/include ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
+(cd gettext-tools/woe32dll; patch < $CCS_ROOT/package/src/gettext.gettextlib-exports.patch)
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+make install -j4
     ]=],
 }

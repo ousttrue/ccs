@@ -4,7 +4,7 @@ srcPackage {
     url={
         "http://ftp.gnu.org/gnu/libtool/libtool-2.4.tar.xz"
     },
- 
+
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src

@@ -1,0 +1,13 @@
+--- gettextlib-exports.c.orig	2011-02-14 18:37:45 +0900
++++ gettextlib-exports.c	2011-02-14 18:38:18 +0900
+@@ -27,8 +27,8 @@
+ VARIABLE(gl_linkedhash_list_implementation)
+ VARIABLE(program_name)
+ #if GNULIB_DEFINED_GETOPT
+-VARIABLE(rpl_optarg)
+-VARIABLE(rpl_optind)
++/*VARIABLE(rpl_optarg)
++VARIABLE(rpl_optind)*/
+ #endif
+ VARIABLE(simple_backup_suffix)
+ VARIABLE(styled_ostream_typeinfo)
