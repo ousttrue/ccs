@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ $# -eq 0 ];then
+    exit
+fi
+
+#set -x
+cd $CCS_ROOT/bin
+unset CCS_ROOT
+cmd /C sh --login -c "source /script/msys_to_i686-pc-mingw32 $*"
