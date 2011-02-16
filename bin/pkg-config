@@ -1,0 +1,130 @@
+#!/usr/bin/lua
+
+local function dir_walk(path, f)
+    if lfs.attributes(path, "mode") == "directory" then
+        for file in lfs.dir(path) do
+            if file=="." or file==".." then
+                -- skip
+            else
+                dir_walk(path .. "/" .. file, f)
+            end
+        end
+    else
+        f(path)
+    end
+end
+
+local function line_parse(l)
+    local k, v=l:match("^([%w_]+)=(.*)")    
+    if k then
+        return "param", k, v
+    end
+    k, v=l:match("^([%w_]+):%s*(.*)")
+    if k then
+        return "key", k, v
+    end
+end
+
+local function expand(v, params)
+    return v:gsub("\${([%w_]+)}", params)
+end
+
+local function parse(pcfile)
+    local pkg={}
+
+    local f=io.open(pcfile)
+
+    -- parse pc file
+    local params={}
+    for l in f:lines() do
+        local t, k, v=line_parse(l)
+        if t=="param" then
+            params[k]=expand(v, params)
+        elseif t=="key" then
+            pkg[k:lower()]=expand(v, params)
+        end
+    end
+
+    f:close()
+    return pkg
+end
+
+local repos=os.getenv("CCS_TARGET_ROOT")
+if not repos then
+    print("no $CCS_TARGET_ROOT")
+    os.exit(1)
+end
+local packages={}
+local root=os.getenv("CCS_TARGET_ROOT").."/lib/pkgconfig"
+dir_walk(root, function(file)
+    local name=file:match("([^/]*)%.pc$")
+    if  name then
+        --print(name)
+        packages[name]=parse(file)
+    end
+end)
+local pkg_config_path=os.getenv("PKG_CONFIG_PATH")
+if pkg_config_path~=root then
+    dir_walk(pkg_config_path,  function(file)
+        local name=file:match("([^/]*)%.pc$")
+        if  name then
+            --print(name)
+            packages[name]=parse(file)
+        end
+    end)
+end
+
+local commands={}
+local targets={}
+for i, v in ipairs(arg) do
+    local cmd=v:match("^%-%-(.*)$")
+    --print(cmd, type(cmd))
+    if cmd then
+        commands[cmd]=true
+    else
+        --print('targets', v)
+        local splited={}
+        for m in v:gmatch("[^%s]+") do
+            table.insert(splited, m)
+        end
+        if #splited>0 then
+            table.insert(targets, splited[1])
+        end
+    end
+end
+
+--[[
+local f=io.open("/tmp/pkg-config.log", "a")
+local p=print
+print=function (...)
+    f:write(table.concat({...}, ","))
+    f:write("\n")
+    p(unpack{...})
+end
+print(table.concat(arg, ","))
+--]]
+
+local pkg=packages[targets[1]]
+--print(targets[1], pkg)
+if commands["exists"] then
+    if pkg then
+        print(unpack(arg), "true")
+        os.exit(0)
+    else
+        print(unpack(arg), "false")
+        os.exit(1)
+    end
+end
+
+if commands["cflags"] then
+    if pkg then
+        print(pkg["cflags"])
+    end
+end
+
+if commands["libs"] then
+    if pkg then
+        print(pkg["libs"])
+    end
+end
+
