@@ -47,7 +47,7 @@ cd src/$archive_dir
 (cd gettext-tools/gnulib-lib; patch < $CCS_ROOT/package/src/gettext.tempname.patch)
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --without-emacs
 fixlibtool
-#find gettext-tools -name "*.h" | xargs perl -i.bak -pe 's/DLL_VARIABLE//g'
+find gettext-tools -name "*.h" | xargs perl -i.bak -pe 's/DLL_VARIABLE//g'
 make install -j4
     ]=],
 }
