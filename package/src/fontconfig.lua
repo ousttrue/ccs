@@ -4,7 +4,9 @@ srcPackage {
     url={
         "http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.8.0.tar.gz"
     },
- 
+    depends={
+        "freetype",
+    },
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src
