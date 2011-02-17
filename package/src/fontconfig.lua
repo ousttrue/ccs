@@ -5,7 +5,7 @@ srcPackage {
         "http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.8.0.tar.gz"
     },
     depends={
-        "freetype", "libxml",
+        "freetype", "libxml2",
     },
     sh=[=[
 set -x
