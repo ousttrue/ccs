@@ -1,39 +1,70 @@
 #!/bin/sh
 # archive extract helper
 
-if [ $# -lt 2 ];then
+function usage()
+{
+    cat << _USAGE_
+usage: $0 {archive} [dst]
+_USAGE_
     exit
-fi
-mkdir -p $2
-archive=`basename $1`
+}
 
-case $1 in
-    *.tgz)
-    tar xzf $1 -C $2
-    echo ${archive//.tgz//}
-    ;;
-    *.tar.gz)
-    tar xzf $1 -C $2
-    echo ${archive//.tar.gz//}
-    ;;
-    *.tar.bz2)
-    tar xjf $1 -C $2
-    echo ${archive//.tar.bz2//}
-    ;;
-    *.tar.xz)
-    tar xJf $1 -C $2
-    echo ${archive//.tar.xz//}
-    ;;
-    *.tar.lzma)
-    tar xJf $1 -C $2
-    echo ${archive//.tar.lzma//}
-    ;;
-    *.zip)
-    unzip -qo -d $2 $1
-    echo ${archive//.zip//}
-    ;;
-    *)
-    exit 1
-    ;;
-esac
+function extract()
+{
+    path=$1
+    name=`basename $1`
+    dst=$2
+    #echo "extract $archive to $dst"
+
+    if [ ! -d $dst ];then
+        mkdir -p $dst
+    fi
+
+    case $1 in
+        *.tgz)
+            #echo "tgz"
+            tar xzf $path -C $dst
+            echo ${name//.tgz//}
+            ;;
+        *.tar.gz)
+            #echo "tar.gz"
+            tar xzf $path -C $dst
+            echo ${name//.tar.gz//}
+            ;;
+        *.tar.bz2)
+            #echo "tar.bz2"
+            tar xjf $path -C $dst
+            echo ${name//.tar.bz2//}
+            ;;
+        *.tar.xz)
+            #echo "tar.xz"
+            tar xJf $path -C $dst
+            echo ${name//.tar.xz//}
+            ;;
+        *.tar.lzma)
+            #echo "tar.lzma"
+            tar xJf $path -C $dst
+            echo ${name//.tar.lzma//}
+            ;;
+        *.zip)
+            #echo "zip"
+            unzip -qo -d $dst $path
+            echo ${name//.zip//}
+            ;;
+        *)
+            #echo "unknown archive: $name"
+            exit 1
+            ;;
+    esac
+}
+
+if [ $# -eq 0 ];then
+    usage
+fi
+
+if [ $# -eq 1 ];then
+    extract $1 "."
+else
+    extract $1 $2
+fi
 

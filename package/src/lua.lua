@@ -30,6 +30,11 @@ archive=`basename http://www.lua.org/ftp/lua-5.1.4.tar.gz`
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 make posix
+cp etc/lua.hpp $CCS_TARGET_ROOT/include
+cd src
+cp lua.exe $CCS_TARGET_ROOT/bin
+cp lua.h luaconf.h lauxlib.h lualib.h $CCS_TARGET_ROOT/include
+cp liblua.a $CCS_TARGET_ROOT/lib
     ]=],
 }
 

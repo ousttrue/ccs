@@ -5,7 +5,7 @@ srcPackage {
         "http://www.codenix.com/~tolua/tolua++-1.0.93.tar.bz2"
     },
     depends={
-        "lua",
+        "lua", "premake",
     },
 
     sh=[=[

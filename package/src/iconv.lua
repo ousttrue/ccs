@@ -4,10 +4,13 @@ srcPackage {
     url={
         "http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.13.1.tar.gz",
     },
+    depends={
+        --"iconv",
+    },
     sh=[=[
 set -x
-cd $CCS_ROOT
-mkdir -p src
+mkdir -p $CCS_TARGET_ROOT/src
+cd $CCS_TARGET_ROOT
 archive=libiconv-1.13.1.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
