@@ -32,6 +32,8 @@ srcPackage {
     },
     sh=[=[
 set -x
+export CFLAGS="-DHAVE_INLINE $CFLAGS"
+export CXXFLAGS="$CFLAGS"
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=gettext-0.17.tar.gz

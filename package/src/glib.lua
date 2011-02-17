@@ -1,24 +1,20 @@
 srcPackage {
     name="glib",
-    version="2.26.1",
+    version="2.28.0",
     url={
-        "http://ftp.gnome.org/pub/gnome/sources/glib/2.26/glib-2.26.1.tar.bz2"
+        "http://ftp.gnome.org/pub/gnome/sources/glib/2.28/glib-2.28.0.tar.bz2",
     },
     depends={
         "gettext",
     },
-    ["depends_i686-mingw32"]={
-        {"gettext", "i686-mingw32"},
-        {"libiconv", "i686-mingw32"},
-    },
- 
     sh=[=[
 set -x
+mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
-mkdir -p src
-archive=`basename http://ftp.gnome.org/pub/gnome/sources/glib/2.26/glib-2.26.1.tar.bz2`
+archive=glib-2.28.0.tar.bz2
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-CFLAGS=-I$CCS_TARGET_ROOT/include LDFLAGS=-L$CCS_TARGET_ROOT/lib ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT && make install
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+make install
     ]=],
 }
