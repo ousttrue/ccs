@@ -44,9 +44,10 @@ archive=gettext-0.17.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 (cd gettext-tools/woe32dll; patch < $CCS_ROOT/package/src/gettext.gettextlib-exports.patch)
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --disable-java  --disable-nls --without-libpth-prefix --without-libintl-prefix --without-libcroco-0.6-prefix --without-libxml2-prefix --without-libncurses-prefix --without-libxcurses-prefix --without-libcurses-prefix --without-emacs
+(cd gettext-tools/gnulib-lib; patch < $CCS_ROOT/package/src/gettext.tempname.patch)
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --without-emacs
 fixlibtool
-find gettext-tools -name "*.h" | xargs perl -i.bak -pe 's/DLL_VARIABLE//g'
+#find gettext-tools -name "*.h" | xargs perl -i.bak -pe 's/DLL_VARIABLE//g'
 make install -j4
     ]=],
 }
