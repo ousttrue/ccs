@@ -5,7 +5,7 @@ srcPackage {
         "http://ftp.gnome.org/pub/gnome/sources/gtk+/3.0/gtk+-3.0.0.tar.bz2"
     },
     depends={
-        "cairo", "gdk-pixbuf", "gilb", "pkg-config", 
+        "cairo", "gdk-pixbuf", "glib", "pkg-config", 
         "pango", "atk", "fontconfig",
     },
     sh=[=[
