@@ -518,7 +518,7 @@ function SrcPackage:install()
             os.exit()
         end
     else
-        if os.execute("if [ `gcc -dumpmachine` = "..CCS_TARGET .." ];then true; else false; fi")~=0 then
+        if os.execute("if [ `gcc -dumpmachine | perl -pe 's/\\s//g'` = "..CCS_TARGET .." ];then true; else false; fi")~=0 then
             print("no compiler for "..CCS_TARGET)
             os.exit()
         end
