@@ -17,7 +17,7 @@ archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --without-libtiff
 fixlibtool
-find . -name Makefile | xargs perl -pe 's/\x01/ /g'
+find . -name Makefile | xargs perl -i.bak -pe 's/\x01/ /g'
 make install -j4
     ]=],
 }
