@@ -1,4 +1,4 @@
 #!/bin/sh
-find . -name Makefile | xargs perl -i.bak -pe 's/GLIB_GENMARSHAL =\s*$/GLIB_GENMARSHAL = glib-genmarshal/g'
-find . -name Makefile | xargs perl -i.bak -pe 's/GLIB_MKENUMS =\s*$/GLIB_MKENUMS = glib-mkenums/g'
+find . -name Makefile | xargs perl -i.bak -pe 's/GLIB_GENMARSHAL =.*$/GLIB_GENMARSHAL = glib-genmarshal/g'
+find . -name Makefile | xargs perl -i.bak -pe 's/GLIB_MKENUMS =.*$/GLIB_MKENUMS = glib-mkenums/g'
 

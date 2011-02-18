@@ -9,8 +9,7 @@ srcPackage {
     },
     sh=[=[
 set -x
-export LDFLAGS="`pkg-config --libs glib-2.0` `pkg-config --libs gobject-2.0` $LDFLAGS"
-export CFLAGS="`pkg-config --cflags glib-2.0` `pkg-config --cflags gobject-2.0` $CFLAGS"
+source $CCS_ROOT/script/glibenv
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=pango-1.28.0.tar.bz2
