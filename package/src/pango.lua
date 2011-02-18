@@ -16,6 +16,7 @@ archive=pango-1.28.0.tar.bz2
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+fixlibtool
 fixglib
 make install -j4
     ]=],
