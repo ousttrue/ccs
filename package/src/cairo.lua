@@ -16,7 +16,7 @@ cd $CCS_TARGET_ROOT
 archive=`basename http://cairographics.org/releases/cairo-1.10.2.tar.gz`
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-opengl
 fixlibtool
 fixglib
 make -j4 install
