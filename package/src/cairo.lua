@@ -5,7 +5,7 @@ srcPackage {
         "http://cairographics.org/releases/cairo-1.10.2.tar.gz"
     },
     depends={
-        "pixman", "freetype", "libpng", "glib",
+        "fontconfig", "pixman", "freetype", "libpng", "glib",
     },
     sh=[=[
 set -x
