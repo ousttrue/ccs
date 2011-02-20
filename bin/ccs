@@ -7,11 +7,24 @@ local function os_capture(cmd)
     return string.gsub(s, "\r?\n$", "")
 end
 
+
+------------------------------------------------------------------------------
+-- path setup
+------------------------------------------------------------------------------
 local CCS_ROOT=os.getenv("CCS_ROOT") or ""
 local CCS_TARGET=os.getenv("CCS_TARGET")
 if not CCS_TARGET then
     print "require CCS_TARGET environment variable"
     os.exit()
+end
+local CCS_PACKAGE_PATH={CCS_ROOT.."/package"}
+do
+    local CCS_PACKAGE_PATH_ENV=os.getenv("CCS_PACKAGE_PATH")
+    if  CCS_PACKAGE_PATH_ENV then
+        for m in string.gmatch(CCS_PACKAGE_PATH_ENV, "[^;]+") do
+            table.insert(CCS_PACKAGE_PATH, m)
+        end
+    end
 end
 local CCS_HOST=os.getenv("CCS_HOST")
 if not CCS_HOST or CCS_HOST=='' then
@@ -37,6 +50,10 @@ if not CCS_TARGET_ROOT then
 end
 local CCS_DOWNLOAD=os.getenv("CCS_DOWNLOAD") or CCS_ROOT.."/download"
 
+
+------------------------------------------------------------------------------
+-- functions
+------------------------------------------------------------------------------
 local function extract_cmd(archive, dst)
     if string.match(archive, "\.tar\.gz$") then
         return string.format("tar xzf %s -C %s", archive, dst)
@@ -462,6 +479,7 @@ function ToolchainPackage:eq(rhs)
     return self.name==rhs.name and self.target==rhs.target
 end
 
+
 ------------------------------------------------------------------------------
 -- GroupPackage
 ------------------------------------------------------------------------------
@@ -470,6 +488,10 @@ local GroupPackage=newClass("GroupPackage", function(self, t)
         self[k]=v
     end
 end, Package)
+
+function GroupPackage:eq(rhs)
+    return self.name==rhs.name
+end
 
 function GroupPackage:to_s()
     return self.name.."("..table.concat(
@@ -536,6 +558,7 @@ function SrcPackage:install()
         CXXFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
         CCS_DOWNLOAD=CCS_DOWNLOAD,
         CCS_URL=self.url[0],
+        CCS_FILE=self.file,
     })
 end
 
@@ -583,6 +606,9 @@ local function loadPackage(file)
     local chunk=assert(loadfile(file))
     setfenv(chunk, env)
     chunk()
+    for i, v in ipairs(packages) do
+        v.file=file
+    end
     return packages
 end
 
@@ -627,17 +653,19 @@ end
 local Manager=newClass("Manager", function(self)
     -- load packages
     self.packages={}
-    dir_walk(CCS_ROOT.."/package", function(f)
-        if f:match("%.lua$") then
-            for i, v in ipairs(loadPackage(f)) do
-                if self.packages[v.name] then
-                    table.insert(self.packages[v.name], v)
-                else
-                    self.packages[v.name]={v}
+    for _, d in ipairs(CCS_PACKAGE_PATH) do
+        dir_walk(d, function(f)
+            if f:match("%.lua$") then
+                for i, v in ipairs(loadPackage(f)) do
+                    if self.packages[v.name] then
+                        table.insert(self.packages[v.name], v)
+                    else
+                        self.packages[v.name]={v}
+                    end
                 end
             end
-        end
-    end)
+        end)
+    end
     print("HOST to TARGET:", CCS_HOST.." to "..CCS_TARGET)
     print()
 end)
@@ -656,7 +684,9 @@ PATH: %s
 CCS_ROOT: %s
 CCS_TARGET_ROOT: %s
 CCS_DOWNLOAD: %s
-    ]=], os.getenv("PATH"), CCS_ROOT, CCS_TARGET_ROOT, CCS_DOWNLOAD)
+CCS_PACKAGE_PATH: %s
+    ]=], os.getenv("PATH"), CCS_ROOT, CCS_TARGET_ROOT, 
+    CCS_DOWNLOAD, table.concat(CCS_PACKAGE_PATH, ":"))
 end
 
 function Manager:show_list(hosts)
@@ -667,10 +697,16 @@ function Manager:show_list(hosts)
                 return k
             end)
             table.sort(keys)
-            for i, k in ipairs(keys) do
+            for _, k in ipairs(keys) do
                 local v=self.packages[k]
+                local p=Package {
+                    name=name,
+                    host=CCS_HOST,
+                    target=CCS_TARGET,
+                }
                 local line=table.concat(map(filter(v, function(e)
-                    return e.host==host
+                    return e:get_class()==SrcPackage or e.target==host
+                    --return e==p
                 end
                 ), ipairs, function(i, e) 
                     return e:to_s() 
@@ -816,7 +852,8 @@ local cmd=table.remove(arg, 1)
 
 
 if cmd=="list" then
-    manager:show_list(arg)
+    manager:show_list({CCS_TARGET})
+    --manager:show_list({})
 
 elseif cmd=="install" then
     if #arg==0 then
@@ -832,7 +869,7 @@ elseif cmd=="toolchain" then
 
 elseif cmd=="create" then
     local p=packageFromUrl(arg[1])
-    local path=CCS_ROOT.."/package/"..p.name..".lua"
+    local path=CCS_PACKAGE_PATH[1].."/"..p.name..".lua"
     print("create:", path)
     if not exists(path) then
         local f=io.open(path, "w")

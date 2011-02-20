@@ -1,0 +1,12 @@
+--- gettextlib-exports.c.orig	2011-02-17 16:47:05.450129400 +0900
++++ gettextlib-exports.c	2011-02-17 16:47:24.325129400 +0900
+@@ -26,7 +26,9 @@
+ VARIABLE(gl_array_list_implementation)
+ VARIABLE(gl_linkedhash_list_implementation)
+ VARIABLE(program_name)
++/*
+ VARIABLE(rpl_optarg)
+ VARIABLE(rpl_optind)
++*/
+ VARIABLE(simple_backup_suffix)
+ VARIABLE(styled_ostream_typeinfo)
