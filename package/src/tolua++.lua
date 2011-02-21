@@ -72,7 +72,7 @@ do
     libdirs {
     }
     links {
-        "lua", "tolua++",
+        "tolua++", "lua",
     }
 end
 
@@ -96,7 +96,7 @@ do
     libdirs {
     }
     links {
-        "lua", "tolua++",
+        "tolua++", "lua",
     }
 end
 _PREMAKE4_
