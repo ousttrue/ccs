@@ -1,0 +1,14 @@
+echo cygwin_to_i686-pc_mingw32
+
+export CCS_TARGET=i686-pc-mingw32
+export CCS_TARGET_ROOT=/$CCS_TARGET
+export CCS_PACKAGE_PATH=$CCS_ROOT/package-sdl
+export PATH="$CCS_TARGET_ROOT/local/bin:$CCS_TARGET_ROOT/bin:$PATH"
+export PKG_CONFIG_PATH="$CCS_TARGET_ROOT/local/lib/pkgconfig"
+export CFLAGS="-I/$CCS_TARGET/local/include"
+export CXXFLAGS="$CFLAGS"
+export LDFLAGS="-L/$CCS_TARGET/local/lib"
+
+PS1='mingw\$ '
+
+alias ls='ls --color'

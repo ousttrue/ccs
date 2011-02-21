@@ -2,8 +2,8 @@
 set -x
 find . -name libtool | xargs perl -i.bak -pe 's/^\s*(dependency_libs=.*)`/\1|perl -pe "s\/\\\/+\/\\\/\/g"`/'
 
-find . -name Makefile | xargs perl -i.bak -pe 's/\s+-lGL/ -lopengl32/g'
 find . -name Makefile | xargs perl -i.bak -pe 's/\s+-lGLU/ -lglu32/g'
+find . -name Makefile | xargs perl -i.bak -pe 's/\s+-lGL/ -lopengl32/g'
 
 find . -name Makefile | xargs perl -i.bak -pe 's/\s+-l(opengl32|glu32|gdi32|winmm|ws2_32|msimg32|glew32)/ -Wl,-l\1/g'
 

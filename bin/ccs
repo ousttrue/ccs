@@ -439,6 +439,10 @@ local BinaryPackage=newClass("BinaryPackage", function(self, t)
     end
 end, Package)
 
+function BinaryPackage:eq(rhs)
+    return self.name==rhs.name and self.host==rhs.target
+end
+
 function BinaryPackage:install()
     self:download(function(archive)
         extract(CCS_DOWNLOAD.."/"..archive, CCS_TARGET_ROOT)
@@ -551,6 +555,7 @@ function SrcPackage:install()
     if self[target_key] then
         script=self[target_key]
     end
+    os.execute("mkdir -p "..CCS_TARGET_ROOT.."/local")
     execute_script(script, {
         CCS_TARGET_ROOT=CCS_TARGET_ROOT.."/local",
         LDFLAGS="-L"..CCS_TARGET_ROOT.."/local/lib",
@@ -705,7 +710,7 @@ function Manager:show_list(hosts)
                     target=CCS_TARGET,
                 }
                 local line=table.concat(map(filter(v, function(e)
-                    return e:get_class()==SrcPackage or e.target==host
+                    return e:get_class()==SrcPackage or e.target==host or e.host==host
                     --return e==p
                 end
                 ), ipairs, function(i, e) 
@@ -799,7 +804,14 @@ function Manager:install(name)
         else
             v:install()
             if v.post then
-                execute_script(v.post)
+                execute_script(v.post, {
+                    CCS_TARGET_ROOT=CCS_TARGET_ROOT.."/local",
+                    LDFLAGS="-L"..CCS_TARGET_ROOT.."/local/lib",
+                    CFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
+                    CXXFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
+                    CCS_DOWNLOAD=CCS_DOWNLOAD,
+                    CCS_FILE=v.file,
+                })
             end
             v:register()
         end

@@ -1,6 +1,6 @@
 binaryPackage {
     name="gdb",
-    host="i686-mingw32",
+    host="i686-pc-mingw32",
     version="7.2",
     release="1",
     url={
@@ -12,7 +12,7 @@ binaryPackage {
 }
 binaryPackage {
     name="libexpat",
-    host="i686-mingw32",
+    host="i686-pc-mingw32",
     version="2.0.1",
     release="1",
     url={
@@ -24,7 +24,7 @@ binaryPackage {
     name="libiconv",
     version="1.13.1",
     release="1",
-    host="i686-mingw32",
+    host="i686-pc-mingw32",
     url={
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/libiconv/libiconv-1.13.1-1/libiconv-1.13.1-1-mingw32-dev.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/libiconv/libiconv-1.13.1-1/libiconv-1.13.1-1-mingw32-dll-2.tar.lzma",
@@ -43,11 +43,21 @@ binaryPackage {
     name="gettext",
     version="0.17-1",
     release="1",
-    host="i686-mingw32",
+    host="i686-pc-mingw32",
     url={
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/gettext/gettext-0.17-1/gettext-0.17-1-mingw32-dev.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/gettext/gettext-0.17-1/libintl-0.17-1-mingw32-dll-8.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/gettext/gettext-0.17-1/libgettextpo-0.17-1-mingw32-dll-0.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/gettext/gettext-0.17-1/libasprintf-0.17-1-mingw32-dll-0.tar.lzma",
     },
+}
+binaryPackage {
+    name="make",
+    version="3.82",
+    release="1",
+    host="i686-pc-mingw32",
+    url={
+        "http://jaist.dl.sourceforge.net/project/mingw/MinGW/make/make-3.82-mingw32/make-3.82-1-mingw32-bin.tar.lzma",
+    },
+    --post="cp $CCS_TARGET_ROOT/bin/ming32-make.exe $CCS_TARGET/bin/make.exe",
 }
