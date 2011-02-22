@@ -9,6 +9,7 @@ srcPackage {
     },
     sh=[=[
 set -x
+export FLEXLINKFLAGS=-L$CCS_TARGET_ROOT/lib
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=ocaml-3.12.0.tar.gz
