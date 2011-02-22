@@ -361,8 +361,12 @@ function Package:getHost()
     end
 end
 
+function Package:getTargetRoot()
+    return CCS_TARGET_ROOT
+end
+
 function Package:getRegisterFile()
-    return CCS_TARGET_ROOT.."/installed/"..self.name
+    return self:getTargetRoot().."/installed/"..self.name
 end
 
 function Package:isInstalled()
@@ -445,7 +449,7 @@ end
 
 function BinaryPackage:install()
     self:download(function(archive)
-        extract(CCS_DOWNLOAD.."/"..archive, CCS_TARGET_ROOT)
+        extract(CCS_DOWNLOAD.."/"..archive, self:getTargetRoot())
     end)
     print(string.format("\n %s installed !!\n", self.name))
 end
@@ -474,7 +478,7 @@ end
 
 function ToolchainPackage:install()
     self:download(function(archive)
-        extract(CCS_DOWNLOAD.."/"..archive, CCS_TARGET_ROOT)
+        extract(CCS_DOWNLOAD.."/"..archive, self:getTargetRoot())
     end)
     print(string.format("\n %s installed !!\n", self.name))
 end
@@ -523,6 +527,10 @@ local SrcPackage=newClass("SrcPackage", function(self, t)
     self.host="src"
 end, Package)
 
+function SrcPackage:getTargetRoot()
+    return CCS_TARGET_ROOT.."/local"
+end
+
 function SrcPackage:eq(rhs)
     return self.name==rhs.name
 end
@@ -532,7 +540,7 @@ function SrcPackage:to_s()
 end
 
 function SrcPackage:getRegisterFile()
-    return CCS_TARGET_ROOT.."/local/installed/"..self.name
+    return self:getTargetRoot().."/installed/"..self.name
 end
 
 function SrcPackage:install()
@@ -555,12 +563,12 @@ function SrcPackage:install()
     if self[target_key] then
         script=self[target_key]
     end
-    os.execute("mkdir -p "..CCS_TARGET_ROOT.."/local")
+    os.execute("mkdir -p "..self:getTargetRoot())
     execute_script(script, {
-        CCS_TARGET_ROOT=CCS_TARGET_ROOT.."/local",
-        LDFLAGS="-L"..CCS_TARGET_ROOT.."/local/lib",
-        CFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
-        CXXFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
+        CCS_TARGET_ROOT=self:getTargetRoot(),
+        LDFLAGS="-L"..self:getTargetRoot().."/lib",
+        CFLAGS="-I"..self:getTargetRoot().."/include",
+        CXXFLAGS="-I"..self:getTargetRoot().."/include",
         CCS_DOWNLOAD=CCS_DOWNLOAD,
         CCS_URL=self.url[0],
         CCS_FILE=self.file,
@@ -805,10 +813,10 @@ function Manager:install(name)
             v:install()
             if v.post then
                 execute_script(v.post, {
-                    CCS_TARGET_ROOT=CCS_TARGET_ROOT.."/local",
-                    LDFLAGS="-L"..CCS_TARGET_ROOT.."/local/lib",
-                    CFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
-                    CXXFLAGS="-I"..CCS_TARGET_ROOT.."/local/include",
+                    CCS_TARGET_ROOT=v:getTargetRoot(),
+                    LDFLAGS="-L"..v:getTargetRoot().."/lib",
+                    CFLAGS="-I"..v:getTargetRoot().."/include",
+                    CXXFLAGS="-I"..v:getTargetRoot().."/include",
                     CCS_DOWNLOAD=CCS_DOWNLOAD,
                     CCS_FILE=v.file,
                 })

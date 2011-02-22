@@ -5,11 +5,13 @@ srcPackage {
         "http://caml.inria.fr/pub/distrib/ocaml-3.12/ocaml-3.12.0.tar.gz"
     },
     depends={
-        "flexdll", "tcl",
+        "flexdll", "tk",
     },
     sh=[=[
 set -x
-export FLEXLINKFLAGS=-L$CCS_TARGET_ROOT/lib
+export FLEXLINKFLAGS="-L$CCS_TARGET_ROOT/lib -L`dirname $CCS_TARGET_ROOT`/lib"
+export C_INCLUDE_PATH="$CCS_TARGET_ROOT/include"
+#export OCAMLLIB="$CCS_TARGET_ROOT/bin"
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=ocaml-3.12.0.tar.gz
@@ -20,10 +22,10 @@ cp config/m-nt.h config/m.h
 cp config/s-nt.h config/s.h
 cp config/Makefile.mingw config/Makefile
 
-make -f Makefile.nt world || exit 1
-make -f Makefile.nt bootstrap || exit 1
-make -f Makefile.nt opt || exit 1
-make -f Makefile.nt opt.opt || exit 1
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT world || exit 1
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT bootstrap || exit 1
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT opt || exit 1
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT opt.opt || exit 1
 make -f Makefile.nt install PREFIX=$CCS_TARGET_ROOT
     ]=],
 }
