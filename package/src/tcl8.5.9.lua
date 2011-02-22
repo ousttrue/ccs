@@ -13,6 +13,6 @@ archive=tcl8.5.9-src.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/tcl8.5.9/win
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-gcc --enable-threads
-make install -j4
+make install
     ]=],
 }
