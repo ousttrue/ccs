@@ -20,7 +20,7 @@ archive=lablgl-1.04.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 #cp Makefile.config.mingw Makefile.config
-cat Makefile.config.mingw | perl -pe 's/84/85/g' | perl -pe 's/glut32/glut/g' > Makefile.config
+cat Makefile.config.mingw | perl -pe 's/84/85/g' | perl -pe 's/glut32/glut/g' | perl -pe "s|^OCAMLDIR.*|OCAMLDIR=${CCS_TARGET_ROOT}|" > Makefile.config
 perl -i.bak -pe 's/^typedef struct TkFontAttributes TkFontAttributes;//g' Togl/src/Togl/tkInt8.5.h
 make TKINCLUDES="-I$CCS_TARGET_ROOT/include" TK_ROOT="$CCS_TARGET_ROOT" || exit 1
 make TKINCLUDES="-I$CCS_TARGET_ROOT/include" TK_ROOT="$CCS_TARGET_ROOT" opt || exit 1
