@@ -9,6 +9,6 @@ export CFLAGS="-I/$CCS_TARGET/local/include"
 export CXXFLAGS="$CFLAGS"
 export LDFLAGS="-L/$CCS_TARGET/local/lib"
 
-PS1='mingw\$ '
+PS1='\033[31m\]mingw\[\033[0m\]\$ '
 
 alias ls='ls --color'
