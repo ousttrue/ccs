@@ -11,8 +11,8 @@ srcPackage {
     },
     sh=[=[
 set -x
-export CFLAGS="$CFLAGS `pkg-config --cflags glib-2.0` `pkg-config --cflags pango` `pkg-config --cflags cairo` `pkg-config --cflags gobject-2.0` `pkg-config --cflags gio-2.0` `pkg-config --cflags gdk-pixbuf-2.0`"
-export LDFLAGS="$LDFLAGS `pkg-config --libs glib-2.0` `pkg-config --libs pango` `pkg-config --libs cairo` `pkg-config --libs gobject-2.0` `pkg-config --libs gio-2.0` `pkg-config --libs gdk-pixbuf-2.0` `pkg-config --libs pangocairo` `pkg-config --libs cairo-gobject`"
+export CFLAGS="$CFLAGS `pkg-config --cflags glib-2.0` `pkg-config --cflags pango` `pkg-config --cflags cairo` `pkg-config --cflags gobject-2.0` `pkg-config --cflags gio-2.0` `pkg-config --cflags gdk-pixbuf-2.0` `pkg-config --cflags atk`"
+export LDFLAGS="$LDFLAGS `pkg-config --libs glib-2.0` `pkg-config --libs pango` `pkg-config --libs cairo` `pkg-config --libs gobject-2.0` `pkg-config --libs gio-2.0` `pkg-config --libs gdk-pixbuf-2.0` `pkg-config --libs pangocairo` `pkg-config --libs cairo-gobject` `pkg-config --libs atk`"
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=gtk+-3.0.0.tar.bz2
