@@ -64,14 +64,18 @@ dir_walk(root, function(file)
     end
 end)
 local pkg_config_path=os.getenv("PKG_CONFIG_PATH")
-if pkg_config_path and pkg_config_path~=root then
-    dir_walk(pkg_config_path,  function(file)
-        local name=file:match("([^/]*)%.pc$")
-        if  name then
-            --print(name)
-            packages[name]=parse(file)
+if pkg_config_path then
+    for m in pkg_config_path:gmatch("([^:]+)") do
+        if m~=root then
+            dir_walk(pkg_config_path,  function(file)
+                local name=file:match("([^/]*)%.pc$")
+                if  name then
+                    --print(name)
+                    packages[name]=parse(file)
+                end
+            end)
         end
-    end)
+    end
 end
 
 local commands={}
