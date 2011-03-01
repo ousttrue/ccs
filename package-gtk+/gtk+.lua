@@ -11,12 +11,15 @@ srcPackage {
     },
     sh=[=[
 set -x
+export CFLAGS="$CFLAGS `pkg-config --cflags glib-2.0` `pkg-config --cflags pango` `pkg-config --cflags cairo` `pkg-config --cflags gobject-2.0`"
+export LDFLAGS="$LDFLAGS `pkg-config --libs glib-2.0` `pkg-config --libs pango` `pkg-config --libs cairo` `pkg-config --libs gobject-2.0`"
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=gtk+-3.0.0.tar.bz2
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+GLIB_COMPILE_SCHEMAS=$CCS_TARGET_ROOT/bin/glib-compile-schemas.exe ./configure --host=$CCS_TARGET --build=i686-pc-cygwin --prefix=$CCS_TARGET_ROOT || exit 1
+fixglib
 make install -j4
     ]=],
 }

@@ -565,6 +565,7 @@ function SrcPackage:install()
     end
     os.execute("mkdir -p "..self:getTargetRoot())
     execute_script(script, {
+        CCS_HOST=CCS_HOST,
         CCS_TARGET_ROOT=self:getTargetRoot(),
         LDFLAGS="-L"..self:getTargetRoot().."/lib",
         CFLAGS="-I"..self:getTargetRoot().."/include",
@@ -813,6 +814,7 @@ function Manager:install(name)
             v:install()
             if v.post then
                 execute_script(v.post, {
+                    CCS_HOST=CCS_HOST,
                     CCS_TARGET_ROOT=v:getTargetRoot(),
                     LDFLAGS="-L"..v:getTargetRoot().."/lib",
                     CFLAGS="-I"..v:getTargetRoot().."/include",

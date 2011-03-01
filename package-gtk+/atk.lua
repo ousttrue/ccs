@@ -17,6 +17,7 @@ archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
 fixglib
+fixlibtool
 make install -j4
     ]=],
 }
