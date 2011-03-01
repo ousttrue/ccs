@@ -6,6 +6,6 @@ find . -name Makefile | xargs perl -i.bak -pe 's/\s+-lGLU/ -lglu32/g'
 find . -name Makefile | xargs perl -i.bak -pe 's/\s+-lGL/ -lopengl32/g'
 
 if [ $# -eq 0 ];then
-    find . -name Makefile | xargs perl -i.bak -pe 's/\s+-l(opengl32|glu32|gdi32|winmm|ws2_32|msimg32|glew32|ole32|shlwapi|dnsapi)/ -Wl,-l\1/g'
+    find . -name Makefile | xargs perl -i.bak -pe 's/\s+-l(opengl32|glu32|gdi32|winmm|ws2_32|msimg32|glew32|ole32|shlwapi|dnsapi|imm32|shell32)/ -Wl,-l\1/g'
 fi
 

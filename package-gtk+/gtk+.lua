@@ -20,6 +20,7 @@ archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 GLIB_COMPILE_SCHEMAS=$CCS_TARGET_ROOT/bin/glib-compile-schemas.exe ./configure --host=$CCS_TARGET --build=i686-pc-cygwin --prefix=$CCS_TARGET_ROOT || exit 1
 fixglib
+fixlibtool
 make install -j4
     ]=],
 }
