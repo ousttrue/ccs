@@ -567,9 +567,9 @@ function SrcPackage:install()
     execute_script(script, {
         CCS_HOST=CCS_HOST,
         CCS_TARGET_ROOT=self:getTargetRoot(),
-        LDFLAGS="-L"..self:getTargetRoot().."/lib",
-        CFLAGS="-I"..self:getTargetRoot().."/include",
-        CXXFLAGS="-I"..self:getTargetRoot().."/include",
+        LDFLAGS=string.format("-L%s/local/lib -L%s/lib", CCS_TARGET_ROOT, self:getTargetRoot()),
+        CFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, self:getTargetRoot()),
+        CXXFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, self:getTargetRoot()),
         CCS_DOWNLOAD=CCS_DOWNLOAD,
         CCS_URL=self.url[0],
         CCS_FILE=self.file,
@@ -826,7 +826,7 @@ function Manager:install(name)
                     CCS_TARGET_ROOT=v:getTargetRoot(),
                     LDFLAGS=string.format("-L%s/local/lib -L%s/lib", CCS_TARGET_ROOT, v:getTargetRoot()),
                     CFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, v:getTargetRoot()),
-                    CXXFLAGS="-I"..v:getTargetRoot().."/include",
+                    CXXFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, v:getTargetRoot()),
                     CCS_DOWNLOAD=CCS_DOWNLOAD,
                     CCS_FILE=v.file,
                 })
