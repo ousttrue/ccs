@@ -21,7 +21,7 @@ local CCS_PACKAGE_PATH={CCS_ROOT.."/package"}
 do
     local CCS_PACKAGE_PATH_ENV=os.getenv("CCS_PACKAGE_PATH")
     if  CCS_PACKAGE_PATH_ENV then
-        for m in string.gmatch(CCS_PACKAGE_PATH_ENV, "[^;]+") do
+        for m in string.gmatch(CCS_PACKAGE_PATH_ENV, "[^;:]+") do
             table.insert(CCS_PACKAGE_PATH, m)
         end
     end

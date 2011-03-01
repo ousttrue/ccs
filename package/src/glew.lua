@@ -12,5 +12,5 @@ tar xzf $CCS_DOWNLOAD/glew-1.5.8.tgz -C src
 cd src/glew-1.5.8
 make GLEW_DEST=$CCS_TARGET_ROOT SYSTEM=mingw install
     ]=],
-    post="chmdo +x $CCS_TARGET_ROOT/bin/glew32.dll",
+    post="chmod +x $CCS_TARGET_ROOT/bin/glew32.dll",
 }

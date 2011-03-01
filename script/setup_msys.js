@@ -67,7 +67,13 @@ function extract(base, lzma)
 {
     echo("extract: "+lzma);
 
-    exec(sevenzip+' e -y '+lzma);
+    try{
+        exec(sevenzip+' e -y '+lzma);
+    }
+    catch(e){
+        echo("may not installed 7-Zip");
+        WScript.Quit();
+    }
 
     var splited=lzma.split('.');
     splited.pop();

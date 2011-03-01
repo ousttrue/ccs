@@ -1,14 +1,20 @@
-echo cygwin_to_i686-pc_mingw32
+echo cygwin_to_x86_64-w64-mingw32
+if [ -e $HOME/.bashrc ];then
+    source $HOME/.bashrc
+fi
 
-export CCS_TARGET=i686-pc-mingw32
+export CCS_TARGET=x86_64-w64-mingw32
 export CCS_TARGET_ROOT=/$CCS_TARGET
-export CCS_PACKAGE_PATH=$CCS_ROOT/package-sdl
+if [ x$CCS_PACKAGE_PATH = x ];then
+    export CCS_PACKAGE_PATH=$CCS_ROOT/package-sdl
+fi
 export PATH="$CCS_TARGET_ROOT/local/bin:$CCS_TARGET_ROOT/bin:$PATH"
 export PKG_CONFIG_PATH="$CCS_TARGET_ROOT/local/lib/pkgconfig"
 export CFLAGS="-I/$CCS_TARGET/local/include"
 export CXXFLAGS="$CFLAGS"
 export LDFLAGS="-L/$CCS_TARGET/local/lib"
 
-PS1='\033[31m\]mingw\[\033[0m\]\$ '
+#PS1='\033[32m\]mingw64\[\033[0m\]\$ '
+PS1='mingw64$ '
 
 alias ls='ls --color'

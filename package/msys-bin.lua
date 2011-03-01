@@ -2,14 +2,14 @@ groupPackage {
     name="system",
     host="i686-pc-msys",
     depends={
-        "make", "bzip2", "unzip", "gawk", 
+        "make", "bzip2-bin", "unzip", "gawk", 
         "diffutils", "patch", "sed", "grep",
         "findutils", "termcap", "libopenssl",
-        "vim-7.2", "autotools", "perl",
+        "vim-7.2", "autotools", "perl", "gettext-bin",
     }
 }
 binaryPackage {
-    name="bzip2",
+    name="bzip2-bin",
     host="i686-pc-msys",
     version="1.0.5",
     release="2",
@@ -160,7 +160,7 @@ groupPackage {
     version="0",
     host="i686-pc-msys",
     depends={
-        "automake", "autoconf", "m4", "libtool",
+        "automake", "autoconf", "m4", "libtool-bin",
     },
 }
 binaryPackage {
@@ -203,7 +203,7 @@ binaryPackage {
     }
 }
 binaryPackage {
-    name="libtool",
+    name="libtool-bin",
     version="2.4",
     release="1",
     host="i686-pc-msys",
@@ -272,6 +272,9 @@ binaryPackage {
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/gettext-0.17-2-msys-1.0.13-dev.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/gettext-0.17-2-msys-1.0.13-bin.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/gettext/gettext-0.17-2/libgettextpo-0.17-2-msys-dll-0.tar.lzma",
+    },
+    depends={
+        "libexpat",
     },
 }
 binaryPackage {
