@@ -310,7 +310,7 @@ function Package:to_s()
 end
 
 function Package:eq(rhs)
-    return self.name==rhs.name and self.host==rhs.host and self.target==rhs.target
+    return self.dir==self.dir and self.name==rhs.name and self.host==rhs.host and self.target==rhs.target
 end
 
 function Package:lt(rhs)
@@ -528,7 +528,7 @@ local SrcPackage=newClass("SrcPackage", function(self, t)
 end, Package)
 
 function SrcPackage:eq(rhs)
-    return self.name==rhs.name
+    return self.dir==self.dir and self.name==rhs.name
 end
 
 function SrcPackage:to_s()
@@ -570,6 +570,7 @@ function SrcPackage:install()
         LDFLAGS=string.format("-L%s/local/lib -L%s/lib", CCS_TARGET_ROOT, self:getTargetRoot()),
         CFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, self:getTargetRoot()),
         CXXFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, self:getTargetRoot()),
+        PKG_CONFIG_PATH=string.format("%s/local/lib/pkgconfig:%s/lib/pkgconfig", CCS_TARGET_ROOT, self:getTargetRoot()),
         CCS_DOWNLOAD=CCS_DOWNLOAD,
         CCS_URL=self.url[0],
         CCS_FILE=self.file,
@@ -737,12 +738,8 @@ function Manager:show_list(hosts)
     end
 end
 
-function Manager:find(_name)
-    local dir, name=_name:match("^(.+/)(.+)")
-    if not dir then
-        name=_name
-        dir=''
-    end
+function Manager:find(name, dir)
+    dir=dir or 'local'
     return self:find_package(
     Package{
         name=name,
@@ -759,6 +756,11 @@ function Manager:find(_name)
         name=name,
         dir=dir,
         host=CCS_HOST,
+    }) or self:find_package(
+    Package{
+        name=name,
+        dir='local',
+        host=CCS_HOST,
     })
 end
 
@@ -770,7 +772,11 @@ function Manager:find_package(p)
         for i, v in ipairs(packages) do
             class=v:get_class()
             --if class==SrcPackage or v==p then
-            if class==SrcPackage or v:eq(p) then
+            if class==SrcPackage then
+                if v.dir==p.dir then
+                    table.insert(founds, v)
+                end
+            elseif v:eq(p) then
                 table.insert(founds, v)
             end
         end
@@ -785,8 +791,8 @@ function Manager:find_package(p)
     end
 end
 
-function Manager:install(name)
-    local t=self:find(name)
+function Manager:install(name, dir)
+    local t=self:find(name, dir)
     if not t then
         print("not found", name)
         os.exit()
@@ -794,7 +800,7 @@ function Manager:install(name)
     -- dependency
     print("resolve dependency...")
     root=Node(t)
-    self:resolve_dependencies(root)
+    self:resolve_dependencies(root, dir)
     --root:show()
 
     -- create install queue
@@ -836,7 +842,7 @@ function Manager:install(name)
     end
 end
 
-function Manager:resolve_dependencies(node)
+function Manager:resolve_dependencies(node, dir)
     local p=node.package
     local depends=p["depends_"..CCS_TARGET] or p.depends
     if depends then
@@ -851,11 +857,12 @@ function Manager:resolve_dependencies(node)
                     name=v[1]
                 end
             end
-            local p=self:find(name)
+            print(node.package:to_s())
+            local p=self:find(name, dir)
             local child=nil
             if p then
                 child=Node(p)
-                self:resolve_dependencies(child)
+                self:resolve_dependencies(child, dir)
             else
                 child=Node(EmptyPackage{name=name})
             end
@@ -891,7 +898,13 @@ elseif cmd=="install" then
         os.exit()
     end
     for i, v in ipairs(arg) do
-        manager:install(v)
+        local dir=v:match("^(.*)/")
+        if dir then
+            local name=v:match("([^/]+)$")
+            manager:install(name, dir)
+        else
+            manager:install(v)
+        end
     end
 
 elseif cmd=="toolchain" then

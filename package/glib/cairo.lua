@@ -17,9 +17,8 @@ cd $CCS_TARGET_ROOT
 archive=cairo-1.10.2.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-gl --enable-wgl
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-gl --enable-wgl || exit 1
 (cd src && patch < $CCS_ROOT/package-gtk+/cairo.ffs.patch)
-# #define ffs __builtin_ffs
 fixlibtool
 make -j4 install
     ]=],
