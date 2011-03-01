@@ -1,0 +1,11 @@
+--- cairo.c.orig	2011-03-01 12:41:37 +0900
++++ cairo.c	2011-03-01 12:54:23 +0900
+@@ -106,6 +106,8 @@
+ #define INFINITY HUGE_VAL
+ #endif
+ 
++#define ffs __builtin_ffs
++
+ static const cairo_t _cairo_nil = {
+   CAIRO_REFERENCE_COUNT_INVALID,	/* ref_count */
+   CAIRO_STATUS_NO_MEMORY,	/* status */

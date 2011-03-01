@@ -5,7 +5,7 @@ srcPackage {
         "http://ftp.gnome.org/pub/gnome/sources/pango/1.28/pango-1.28.0.tar.bz2"
     },
     depends={
-        "fontconfig", "glib", "cairo", "freetype",
+        "fontconfig", "glib", "freetype",
     },
     sh=[=[
 set -x

@@ -45,7 +45,8 @@ archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 (cd gettext-tools/woe32dll; patch < $CCS_ROOT/package/src/gettext.gettextlib-exports.patch)
 (cd gettext-tools/gnulib-lib; patch < $CCS_ROOT/package/src/gettext.tempname.patch)
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --without-emacs
+cd gettext-runtime
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --without-emacs --with-ncludeed-gettext --without-csharp --disable-libasprintf
 fixlibtool
 find gettext-tools -name "*.h" | xargs perl -i.bak -pe 's/DLL_VARIABLE//g'
 make install -j4
