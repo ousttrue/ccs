@@ -7,7 +7,7 @@ srcPackage {
  
     sh=[=[
 set -x
-export CFLAGS="$CFLAGS -DMS_WINDOWS"
+export CFLAGS="$CFLAGS -D_MSC_VER=6"
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=Python-3.2.tar.bz2
