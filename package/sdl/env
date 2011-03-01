@@ -1,0 +1,4 @@
+set -x
+export PATH="$CCS_TARGET_ROOT/sdl/bin:$PATH"
+export PKG_CONFIG_PATH="$CCS_TARGET_ROOT/sdl/lib/pkgconfig:$PKG_CONFIG_PATH"
+set +x

@@ -824,8 +824,8 @@ function Manager:install(name)
                 execute_script(v.post, {
                     CCS_HOST=CCS_HOST,
                     CCS_TARGET_ROOT=v:getTargetRoot(),
-                    LDFLAGS="-L"..v:getTargetRoot().."/lib",
-                    CFLAGS="-I"..v:getTargetRoot().."/include",
+                    LDFLAGS=string.format("-L%s/local/lib -L%s/lib", CCS_TARGET_ROOT, v:getTargetRoot()),
+                    CFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, v:getTargetRoot()),
                     CXXFLAGS="-I"..v:getTargetRoot().."/include",
                     CCS_DOWNLOAD=CCS_DOWNLOAD,
                     CCS_FILE=v.file,
