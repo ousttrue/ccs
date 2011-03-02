@@ -1,0 +1,11 @@
+--- libtool.orig	2011-03-02 20:40:39.785628100 +0900
++++ libtool	2011-03-02 20:40:46.476010700 +0900
+@@ -2321,7 +2321,7 @@
+     # See func_convert_path_msys_to_w32:
+     func_stripname : : "$1"
+     func_to_host_path_tmp1=$func_stripname_result
+-    func_to_host_path_result=`cygpath -m -p "$func_to_host_path_tmp1"`
++    func_to_host_path_result="$func_to_host_path_tmp1"
+     func_convert_path_check : ";" \
+       "$func_to_host_path_tmp1" "$func_to_host_path_result"
+     func_convert_path_front_back_pathsep ":*" "*:" ";" "$1"

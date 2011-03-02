@@ -6,7 +6,7 @@ srcPackage {
     },
     depends={
         "pixman", "freetype", "libpng", "glew", "glext", 
-        "glib", "pango",
+        "glib",
     },
     sh=[=[
 set -x
