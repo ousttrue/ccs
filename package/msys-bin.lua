@@ -296,4 +296,22 @@ binaryPackage {
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/BaseSystem/coreutils/coreutils-5.97-3/coreutils-5.97-3-msys-1.0.13-bin.tar.lzma",
     },
 }
+binaryPackage {
+    name="bison",
+    version="2.4.2",
+    release="1",
+    host="i686-pc-msys",
+    url={
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/bison/bison-2.4.2-1/bison-2.4.2-1-msys-1.0.13-bin.tar.lzma",
+    },
+}
+binaryPackage {
+    name="flex",
+    version="2.5.35",
+    release="2",
+    host="i686-pc-msys",
+    url={
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/flex/flex-2.5.35-2/flex-2.5.35-2-msys-1.0.13-bin.tar.lzma",
+    },
+}
 

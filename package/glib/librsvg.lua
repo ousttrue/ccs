@@ -9,7 +9,7 @@ srcPackage {
     },
     sh=[=[
 set -x
-source $CCS_ROOT/script/glibenv
+source $CCS_SELF_DIR/glibenv
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=librsvg-2.32.1.tar.bz2

@@ -15,7 +15,7 @@ archive=cairo-1.10.2.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-gl --enable-wgl
-# #define ffs __builtin_ffs
+perl -i.bak -pe 's/\bffs\b/__builtin_ffs/g' src/cairo.c
 fixlibtool
 make -j4 install
     ]=],

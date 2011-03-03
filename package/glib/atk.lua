@@ -10,7 +10,7 @@ srcPackage {
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src
-source $CCS_ROOT/script/glibenv
+source $CCS_SELF_DIR/glibenv
 cd $CCS_TARGET_ROOT
 archive=atk-1.33.6.tar.bz2
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`

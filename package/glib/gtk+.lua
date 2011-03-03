@@ -11,9 +11,7 @@ srcPackage {
     },
     sh=[=[
 set -x
-export CFLAGS="$CFLAGS `pkg-config --cflags glib-2.0` `pkg-config --cflags pango` `pkg-config --cflags cairo` `pkg-config --cflags gobject-2.0` `pkg-config --cflags gio-2.0` `pkg-config --cflags gdk-pixbuf-2.0` `pkg-config --cflags atk`"
-export CXXFLAGS="$CFLAGS"
-export LDFLAGS="$LDFLAGS `pkg-config --libs glib-2.0` `pkg-config --libs pango` `pkg-config --libs cairo` `pkg-config --libs gobject-2.0` `pkg-config --libs gio-2.0` `pkg-config --libs gdk-pixbuf-2.0` `pkg-config --libs pangocairo` `pkg-config --libs cairo-gobject` `pkg-config --libs atk`"
+source $CCS_SELF_DIR/glibenv
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=gtk+-3.0.0.tar.bz2
@@ -24,11 +22,12 @@ fixglib
 fixlibtool
 patch < $CCS_ROOT/package/glib/gtk+.libtool.patch
 (cd modules/other/gail && patch -p1 < $CCS_ROOT/package/glib/gtk+.gail.patch)
-if make install -j4; then
+if make -j4; then
+    true
 else
     pushd gtk
     make gtk-update-icon-cache.exe
-    patch < $CCS_ROOT/package/glib/gtk+.Makefile.patch
+    perl -i.bak -pe 's/^GTK_UPDATE_ICON_CACHE\b.*$/GTK_UPDATE_ICON_CACHE = .\/gtk-update-icon-cache.exe/' Makefile
     popd
 fi
 make install -j4

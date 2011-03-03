@@ -573,6 +573,7 @@ function SrcPackage:install()
         PKG_CONFIG_PATH=string.format("%s/local/lib/pkgconfig:%s/lib/pkgconfig", CCS_TARGET_ROOT, self:getTargetRoot()),
         CCS_DOWNLOAD=CCS_DOWNLOAD,
         CCS_URL=self.url[0],
+        CCS_SELF_DIR=CCS_ROOT..'/package/'..self.dir,
         CCS_FILE=self.file,
     })
 end
@@ -931,7 +932,7 @@ cd $CCS_TARGET_ROOT
 archive=`basename $CCS_URL`
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT || exit 1
 make install -j4
     ]=],
 ]==]
