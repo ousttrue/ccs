@@ -13,7 +13,9 @@ WindowsXP(32bit)とWindows7(64bit)でわりと動きました。
 ------
 配布物
 ------
+
 ::
+
     bin(Msysのルートになる)
         lua.exe msysとリンクしたlua。luafilesystem http://keplerproject.github.com/luafilesystem/ を含めている
         ccs luaスクリプト。本体
@@ -26,9 +28,9 @@ WindowsXP(32bit)とWindows7(64bit)でわりと動きました。
 使うディレクトリ
 ----------------
 ccsの展開先に追加して、
-C:/download パッケージアーカイブのダウンロード用
-C:/i686-pc-mingw32 MinGWのtoolchain展開及びソースパッケージのインストール先 
-C:/x86_64-w64-mingw32 MinGW-W64 http://mingw-w64.sourceforge.net/ のtoolchain展開及びソースパッケージのインストール先
+- C:/download パッケージアーカイブのダウンロード用
+- C:/i686-pc-mingw32 MinGWのtoolchain展開及びソースパッケージのインストール先 
+- C:/x86_64-w64-mingw32 MinGW-W64 http://mingw-w64.sourceforge.net/ のtoolchain展開及びソースパッケージのインストール先
 を使います。
 
 ------------
@@ -55,6 +57,7 @@ CCSコマンド
 Cross Compile Script
 
 ::
+
     HOST to TARGET: i686-pc-msys to x86_64-w64-mingw32
     
     usage: ccs {list|install|toolchain} [args...]
@@ -67,15 +70,13 @@ gccをインストールする
 の各環境向けのバイナリパッケージをダウンロードして展開します
 
 ::
+
     $ ccs toolchain
 
 パッケージをインストールする
 +++++++++++++++++++++++++++
-::
-    $ ccs install libpng
 
-パッケージ
-++++++++++
-/package
-のluaファイルがそれです。
+::
+
+    $ ccs install libpng
 
