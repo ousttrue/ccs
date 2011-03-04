@@ -5,7 +5,7 @@ srcPackage {
         "ftp://ftp.gimp.org/pub/gegl/0.1/gegl-0.1.6.tar.bz2"
     },
     depends={
-        "babl",
+        "babl", "libjpeg", "libpng",
     },
     sh=[=[
 set -x

@@ -2,7 +2,7 @@
 Cross Compile Script
 ====================
 これは、MinGW環境でのアプリのビルドを自動化するスクリプトです。
-WindowsXP(32bit)とWindows7(64bit)でわりと動きます。
+WindowsXP(32bit)とWindows7(64bit)でわりと動きました。
 
 -----------------------
 参考にしたツール・サイト
@@ -42,7 +42,40 @@ C:/x86_64-w64-mingw32 MinGW-W64 http://mingw-w64.sourceforge.net/ のtoolchain�
 使い方 Msys展開(初回のみ)
 -------------------------
 
------------------------------
-使い方 パッケージインストール
------------------------------
+script/setup.batを実行する
++++++++++++++++++++++++++
+以下のショートカットが生成されるのでそこから各ターゲット向けのMsys環境に入れます。
+- msys_to_msys
+- msys_to_i686-pc-mingw32
+- msys_to_x86_64-w64-mingw32
+
+----------
+CCSコマンド
+----------
+Cross Compile Script
+
+::
+    HOST to TARGET: i686-pc-msys to x86_64-w64-mingw32
+    
+    usage: ccs {list|install|toolchain} [args...]
+   
+gccをインストールする
+++++++++++++++++++++
+- i686-pc-msys(/usr)
+- i686-pc-mingw32(/i686-pc-mingw32)
+- x86_64-w64-mingw32(/x86_64-w64-mingw32)
+の各環境向けのバイナリパッケージをダウンロードして展開します
+
+::
+    $ ccs toolchain
+
+パッケージをインストールする
++++++++++++++++++++++++++++
+::
+    $ ccs install libpng
+
+パッケージ
+++++++++++
+/package
+のluaファイルがそれです。
 

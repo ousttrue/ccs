@@ -924,19 +924,18 @@ elseif cmd=="create" then
         f:write('    url={\n')
         f:write('        "'..p.url..'"\n')
         f:write('    },\n')
-        f:write([==[ 
+        f:write(string.format([==[ 
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
-archive=`basename $CCS_URL`
+archive=%s
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT || exit 1
 make install -j4
     ]=],
-]==]
-        )
+]==], basename(arg[1])))
         f:write('}\n')
         f:close()
     end

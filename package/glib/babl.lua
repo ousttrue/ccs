@@ -6,7 +6,6 @@ srcPackage {
     },
     sh=[=[
 set -x
-source $CCS_SELF_DIR/glibenv
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=babl-0.1.4.tar.bz2
@@ -18,6 +17,7 @@ find . -name Makefile | xargs perl -i.bak -pe 's/\s-pthread/ -lpthread/g'
 make install -j4
     ]=],
 }
+--[[
 srcPackage {
     name="babl",
     version="0.1.2",
@@ -26,7 +26,6 @@ srcPackage {
     },
     sh=[=[
 set -x
-source $CCS_SELF_DIR/glibenv
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=babl-0.1.2.tar.bz2
@@ -38,3 +37,4 @@ find . -name Makefile | xargs perl -i.bak -pe 's/\s-pthread/ -lpthread/g'
 make install -j4
     ]=],
 }
+--]]
