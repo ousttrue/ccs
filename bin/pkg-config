@@ -45,6 +45,8 @@ local function parse(pcfile)
         end
     end
 
+    pkg.params=params
+
     f:close()
     return pkg
 end
@@ -81,18 +83,23 @@ end
 local commands={}
 local targets={}
 for i, v in ipairs(arg) do
-    local cmd=v:match("^%-%-(.*)$")
-    --print(cmd, type(cmd))
-    if cmd then
-        commands[cmd]=true
+    local k=v:match("^%-%-variable=(.*)$")
+    if k then
+        commands['variable']=k
     else
-        --print('targets', v)
-        local splited={}
-        for m in v:gmatch("[^%s]+") do
-            table.insert(splited, m)
-        end
-        if #splited>0 then
-            table.insert(targets, splited[1])
+        local cmd=v:match("^%-%-(.*)$")
+        --print(cmd, type(cmd))
+        if cmd then
+            commands[cmd]=true
+        else
+            --print('targets', v)
+            local splited={}
+            for m in v:gmatch("[^%s]+") do
+                table.insert(splited, m)
+            end
+            if #splited>0 then
+                table.insert(targets, splited[1])
+            end
         end
     end
 end
@@ -129,6 +136,13 @@ end
 if commands["libs"] then
     if pkg then
         print(pkg["libs"])
+    end
+end
+
+if commands["variable"] then
+    if pkg then
+        local k=commands["variable"]
+        print(pkg.params[k])
     end
 end
 

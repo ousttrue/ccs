@@ -10,6 +10,8 @@ export LDFLAGS="$LDFLAGS \
 `pkg-config --libs cairo-gobject` \
 `pkg-config --libs pangocairo` \
 `pkg-config --libs libxml-2.0` \
+`pkg-config --libs gtk+-3.0` \
+`pkg-config --libs gstreamer-0.10` \
 "
 
 export CFLAGS="$CFLAGS \
@@ -24,6 +26,8 @@ export CFLAGS="$CFLAGS \
 `pkg-config --cflags cairo-gobject` \
 `pkg-config --cflags pangocairo` \
 `pkg-config --cflags libxml-2.0` \
+`pkg-config --cflags gtk+-3.0` \
+`pkg-config --cflags gstreamer-0.10` \
 "
 
 export CXXFLAGS="$CFLAGS"
