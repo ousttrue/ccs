@@ -1,14 +1,14 @@
 srcPackage {
-    name="llvm",
-    version="2.8",
+    name="tiff",
+    version="3.9.4",
     url={
-        "http://llvm.org/releases/2.8/llvm-2.8.tgz"
+        "ftp://ftp.remotesensing.org/pub/libtiff/tiff-3.9.4.tar.gz"
     },
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
-archive=llvm-2.8.tgz
+archive=tiff-3.9.4.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT || exit 1

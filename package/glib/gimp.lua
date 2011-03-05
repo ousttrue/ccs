@@ -1,21 +1,20 @@
 srcPackage {
     name="gimp",
-    version="2.6.11.tar",
-    host="i686-pc-cygwin",
+    version="2.6.11",
     url={
         "ftp://ftp.gimp.org/pub/gimp/v2.6/gimp-2.6.11.tar.bz2"
     },
     depends={
-        "gtk+", "gegl",
+        "gtk+", "gegl", "intltool", "tiff",
     },
     sh=[=[
 set -x
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
-archive=`basename $CCS_URL`
+archive="gimp-2.6.11.tar.bz2"
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --disable-python || exit 1
 make install -j4
     ]=],
 }
