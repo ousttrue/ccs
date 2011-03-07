@@ -59,7 +59,7 @@ toolchainPackage {
         "http://jaist.dl.sourceforge.net/project/mingw/MinGW/mpfr/mpfr-2.4.1-1/libmpfr-2.4.1-1-mingw32-dll-1.tar.lzma",
     },
     post=[=[
-cd /i686-pc-mingw32/bin
+cd $CCS_TARGET_ROOT/bin
 cp gcc.exe cc.exe
     ]=],
 }

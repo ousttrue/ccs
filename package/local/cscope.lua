@@ -6,7 +6,7 @@ srcPackage {
         "http://cscope.sourceforge.net/cscope_maps.vim",
     },
     depends={
-        "regex",
+        --"regex",
     },
  
     sh=[=[
