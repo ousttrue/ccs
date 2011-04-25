@@ -19,7 +19,7 @@ cd src/screen-4.0.3
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT
 tar xjf $CCS_DOWNLOAD/screen-4.0.3-6-src.tar.bz2
 cat *.patch | patch -p2
-if [ $OSTYPE='msys' ];then
+if [ $OSTYPE = 'msys' ];then
     patch < $CCS_SELF_DIR/screen-4.0.3-execvpe.diff
 fi
 patch < $CCS_SELF_DIR/screen-4.0.3-encoding.diff
