@@ -7,6 +7,7 @@ binaryPackage {
     },
     post=[[
 set -x
+mkdir -p $CCS_TARGET_ROOT/bin
 cd $CCS_TARGET_ROOT
 mv flex* bin/
     ]],

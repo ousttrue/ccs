@@ -13,6 +13,7 @@ export FLEXLINKFLAGS="-L$CCS_TARGET_ROOT/lib -L`dirname $CCS_TARGET_ROOT`/lib"
 export C_INCLUDE_PATH="$CCS_TARGET_ROOT/include"
 #export OCAMLLIB="$CCS_TARGET_ROOT/bin"
 mkdir -p $CCS_TARGET_ROOT/src
+mkdir -p $CCS_TARGET_ROOT/bin
 cd $CCS_TARGET_ROOT
 archive=ocaml-3.12.0.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`

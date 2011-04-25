@@ -274,6 +274,7 @@ function newClass(className, constructor, superClass)
                 __index=class,
                 __eq=class.eq,
                 __lt=class.lt,
+                __tostring=class.to_s,
             })
             constructor(instance, unpack{...})
             return instance;
@@ -404,23 +405,25 @@ function Package:download(on_download)
     assert(type(self.url=="table"))
     if self.url then
         for i, url in ipairs(self.url) do
-            -- download
-            local archive=self.archive
-            if not archive then
-                archive=assert(string.match(url, "/([^/]+)$"))
-            end
-            local cmd=string.format("(mkdir -p "..CCS_DOWNLOAD.."; cd "..CCS_DOWNLOAD.."; if [ ! -e %s ];then wget --no-check-certificate -O '%s' '%s';fi)",
-            archive, archive, url)
-            --print(cmd)
-            local ret=os.execute(cmd)
-            if ret>0 then
-                print("error occurs")
-                os.exit()
-            end
+            if url:find("^https?:") or url:find("^ftp:") then
+                -- download
+                local archive=self.archive
+                if not archive then
+                    archive=assert(string.match(url, "/([^/]+)$"))
+                end
+                local cmd=string.format("(mkdir -p "..CCS_DOWNLOAD.."; cd "..CCS_DOWNLOAD.."; if [ ! -e %s ];then wget --no-check-certificate -O '%s' '%s';fi)",
+                archive, archive, url)
+                --print(cmd)
+                local ret=os.execute(cmd)
+                if ret>0 then
+                    print("error occurs")
+                    os.exit()
+                end
 
-            -- extract
-            if on_download then
-                on_download(archive)
+                -- extract
+                if on_download then
+                    on_download(archive)
+                end
             end
         end
     elseif self.svn then
@@ -572,7 +575,7 @@ function SrcPackage:install()
         CXXFLAGS=string.format("-I%s/local/include -I%s/include", CCS_TARGET_ROOT, self:getTargetRoot()),
         PKG_CONFIG_PATH=string.format("%s/local/lib/pkgconfig:%s/lib/pkgconfig", CCS_TARGET_ROOT, self:getTargetRoot()),
         CCS_DOWNLOAD=CCS_DOWNLOAD,
-        CCS_URL=self.url[0],
+        CCS_URL=self.url[1],
         CCS_SELF_DIR=CCS_ROOT..'/package/'..self.dir,
         CCS_FILE=self.file,
     })
@@ -668,15 +671,18 @@ end
 -- Manager
 ------------------------------------------------------------------------------
 local Manager=newClass("Manager", function(self)
+    self.package_count=0
     -- load packages
     self.packages={}
     dir_walk(CCS_ROOT..'/package', function(f)
         if f:match("%.lua$") then
             for i, v in ipairs(loadPackage(f)) do
-                if self.packages[v.name] then
+                if self:is_valid(v) then
+                    if not self.packages[v.name] then
+                        self.packages[v.name]={}
+                    end
+                    self.package_count=self.package_count+1
                     table.insert(self.packages[v.name], v)
-                else
-                    self.packages[v.name]={v}
                 end
             end
         end
@@ -695,46 +701,51 @@ list : display installed packages.
 toolchain : install compile toolchain.
 install {package}: install a package. 
 
-PATH: %s
-CCS_ROOT: %s
+CCS_ROOT: %s (%d packages)
 CCS_TARGET_ROOT: %s
 CCS_DOWNLOAD: %s
-    ]=], os.getenv("PATH"), CCS_ROOT, CCS_TARGET_ROOT, 
+    ]=], 
+    CCS_ROOT, self.package_count,
+    CCS_TARGET_ROOT, 
     CCS_DOWNLOAD)
 end
 
-function Manager:show_list(hosts)
-    if #hosts>0 then
-        for i, host in ipairs(hosts) do
-            print("["..host.."]")
-            local keys=map(self.packages, pairs, function(k, v)
-                return k
-            end)
-            table.sort(keys, function(a, b)
-                return a<b
-            end)
-            for _, k in ipairs(keys) do
-                local v=self.packages[k]
-                local p=Package {
-                    name=name,
-                    host=CCS_HOST,
-                    target=CCS_TARGET,
-                }
-                local line=table.concat(map(filter(v, function(e)
-                    return e:get_class()==SrcPackage or e.target==host or e.host==host
-                    --return e==p
-                end
-                ), ipairs, function(i, e) 
-                    return e:to_s() 
-                end), ", ")
-                if line~="" then
-                    print(line)
-                end
-            end
+-- target package is valid in current environment.
+function Manager:is_valid(package)
+    if package.host==CCS_TARGET then
+        return true
+    end
+    if package.target==CCS_TARGET then
+        return true
+    end
+    if package:get_class()==SrcPackage then
+        return true
+    end
+end
+
+function Manager:show_list()
+    local keys=map(self.packages, pairs, function(k, v)
+        return k
+    end)
+    table.sort(keys, function(a, b)
+        return a<b
+    end)
+    for i, k in ipairs(keys) do
+        local v=self.packages[k]
+        local p=Package {
+            name=name,
+            host=CCS_HOST,
+            target=CCS_TARGET,
+        }
+        local line=table.concat(map(filter(v, function(e)
+            return e:get_class()==SrcPackage or e.target==host or e.host==host
+            --return e==p
         end
-    else
-        for k, v in pairs(self.packages) do
-            print(table.concat(map(v, ipairs, function(i, e) return e:to_s() end), ", "))
+        ), ipairs, function(i, e) 
+            return e:to_s() 
+        end), ", ")
+        if line~="" then
+            print(string.format("[%d]%s", i, line))
         end
     end
 end
@@ -767,6 +778,8 @@ end
 
 function Manager:find_package(p)
     --print("find_package:", p:to_s())
+    local founds=self.packages[p.name] or {}
+    --[[
     local founds={}
     local packages=self.packages[p.name]
     if packages then
@@ -782,6 +795,7 @@ function Manager:find_package(p)
             end
         end
     end
+    --]]
     if #founds>0 then
         if #founds>1 then
             table.sort(founds, function(a, b)
@@ -890,8 +904,7 @@ local cmd=table.remove(arg, 1)
 
 
 if cmd=="list" then
-    manager:show_list({CCS_TARGET})
-    --manager:show_list({})
+    manager:show_list()
 
 elseif cmd=="install" then
     if #arg==0 then

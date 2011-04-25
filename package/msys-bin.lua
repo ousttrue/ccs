@@ -5,7 +5,8 @@ groupPackage {
         "make", "bzip2-bin", "unzip", "gawk", 
         "diffutils", "patch", "sed", "grep",
         "findutils", "termcap", "libopenssl",
-        "vim-7.2", "autotools", "perl", "gettext-bin",
+        "vim-7.2", "autotools", "gettext-bin",
+        "perl",
     }
 }
 binaryPackage {

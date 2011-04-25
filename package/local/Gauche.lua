@@ -5,7 +5,7 @@ srcPackage {
         "http://jaist.dl.sourceforge.net/project/gauche/Gauche/Gauche-0.9.1.tgz"
     },
     depends={
-        "zlib",
+        --"zlib",
     },
     sh=[=[
 set -x
