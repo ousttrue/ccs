@@ -1,0 +1,10 @@
+--- encoding.c.orig	2011-04-25 22:28:41 +0900
++++ encoding.c	2011-04-25 22:29:13 +0900
+@@ -1159,6 +1159,7 @@
+ 	      *statep = c;
+ 	      return -1;
+ 	    }
++      if (!(c & 0x80)) return c;
+ 	  return c | (KANA << 16);
+ 	}
+       t = c;

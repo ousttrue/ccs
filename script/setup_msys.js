@@ -161,6 +161,21 @@ function create_ccsrc(){
 }
 create_ccsrc();
 
+// msys_to_msys
+echo("create: msys_to_msys.lnk");
+var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_msys.lnk");
+sc.TargetPath=ROOT_DIR+"\\bin\\bash";
+sc.Arguments="/script/msys_to_msys ";
+sc.IconLocation=ROOT_DIR+"\\m.ico";
+sc.Save();
+
+// msys_to_msys(mintty)
+echo("create: msys_to_msys(mintty).lnk");
+var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_msys(mintty).lnk");
+sc.TargetPath=ROOT_DIR+"\\bin\\mintty.exe";
+sc.Arguments="/script/msys_to_msys";
+sc.Save();
+
 // msys_to_i686-pc-mingw32
 echo("create: msys_to_i686-pc-mingw32.lnk");
 var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_i686-pc-mingw32.lnk");
@@ -174,14 +189,6 @@ echo("create: msys_to_i686-pc-mingw32(mintty).lnk");
 var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_i686-pc-mingw32(mintty).lnk");
 sc.TargetPath=ROOT_DIR+"\\bin\\mintty.exe";
 sc.Arguments="/script/msys_to_i686-pc-mingw32";
-sc.Save();
-
-// msys_to_msys
-echo("create: msys_to_msys.lnk");
-var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_msys.lnk");
-sc.TargetPath=ROOT_DIR+"\\bin\\bash";
-sc.Arguments="/script/msys_to_msys ";
-sc.IconLocation=ROOT_DIR+"\\m.ico";
 sc.Save();
 
 // msys_to_x86_64-w64-mingw32

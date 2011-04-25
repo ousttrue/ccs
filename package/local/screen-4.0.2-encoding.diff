@@ -1,0 +1,10 @@
+--- encoding.c.org  Mon Sep  8 23:25:23 2003
++++ encoding.c  Mon Aug 28 18:11:57 2006
+@@ -1151,6 +1151,7 @@
+          *statep = c;
+          return -1;
+        }
++     if (!(c & 0x80)) return c;
+      return c | (KANA << 16);
+    }
+       t = c;

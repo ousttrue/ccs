@@ -5,7 +5,7 @@ srcPackage {
         "http://caml.inria.fr/pub/distrib/ocaml-3.12/ocaml-3.12.0.tar.gz"
     },
     depends={
-        "flexdll", "tk",
+        "flexdll", "tcl",
     },
     sh=[=[
 set -x
