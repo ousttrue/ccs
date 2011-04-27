@@ -19,6 +19,6 @@ mv src/auto/{pathdef.c,pathdef.c.orig}
 sed -e 's/\r//' src/auto/pathdef.c.orig > src/auto/pathdef.c
 make 
 sed -e 's/\r//' src/auto/pathdef.c.orig > src/auto/pathdef.c
-make install -j4
+make install
     ]=]
 }

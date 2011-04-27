@@ -17,11 +17,8 @@ archive=cscope-15.7a.tar.bz2
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --prefix=$CCS_TARGET_ROOT
-if make install -j4;then
-    true
-else
-    exit 1
-fi
+make -j4 || exit 1
+make install
 mkdir -p $HOME/.vim/plugin
 if [ ! -e $HOME/.vim/plugin/cscope_maps.vim ];then
     cp $CCS_DOWNLOAD/cscope_maps.vim $HOME/.vim/plugin/
