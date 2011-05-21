@@ -946,6 +946,7 @@ archive=%s
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT || exit 1
+make || exit 1
 make install -j4
     ]=],
 ]==], basename(arg[1])))

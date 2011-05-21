@@ -1,11 +1,11 @@
 srcPackage {
-    name="Gauche",
-    version="0.9",
+    name="gauche",
+    version="0.9.1",
     url={
         "http://jaist.dl.sourceforge.net/project/gauche/Gauche/Gauche-0.9.1.tgz"
     },
     depends={
-        --"zlib",
+        "iconv",
     },
     sh=[=[
 set -x
@@ -14,7 +14,9 @@ cd $CCS_TARGET_ROOT
 archive=Gauche-0.9.1.tgz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
-./configure --prefix=$CCS_TARGET_ROOT || exit 1
-make install -j4
+./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT || exit 1
+make || exit 1
+make install
     ]=],
 }
+
