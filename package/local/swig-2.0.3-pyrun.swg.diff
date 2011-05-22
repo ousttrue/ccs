@@ -1,0 +1,102 @@
+--- pyrun.swg.orig	2010-10-01 13:01:08.000000000 +0900
++++ pyrun.swg	2011-05-22 14:19:56.801816100 +0900
+@@ -45,8 +45,29 @@
+ #define SWIG_SetErrorMsg                        	SWIG_Python_SetErrorMsg				   
+ #define SWIG_ErrorType(code)                    	SWIG_Python_ErrorType(code)                        
+ #define SWIG_Error(code, msg)            		SWIG_Python_SetErrorMsg(SWIG_ErrorType(code), msg) 
+-#define SWIG_fail                        		goto fail					   
++#define SWIG_fail goto fail
+ 
++/*
++ * Python 2.7 and newer and Python 3.1 and newer should use Capsules API instead of
++ * CObjects API.
++ */
++#if ((PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION > 6) || \
++ (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION > 0))
++#define USE_CAPSULES
++#define TYPE_POINTER_NAME \
++ ((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION ".type_pointer_capsule" SWIG_TYPE_TABLE_NAME)
++#endif
++ 
++/*
++ * Python 2.7 and newer and Python 3.1 and newer should use Capsules API instead of
++ * CObjects API.
++ */
++#if ((PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION > 6) || \
++ (PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION > 0))
++#define USE_CAPSULES
++#define TYPE_POINTER_NAME \
++ ((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION ".type_pointer_capsule" SWIG_TYPE_TABLE_NAME)
++#endif
+ 
+ /* Runtime API implementation */
+ 
+@@ -1359,8 +1380,12 @@
+ #ifdef SWIG_LINK_RUNTIME
+     type_pointer = SWIG_ReturnGlobalTypeList((void *)0);
+ #else
++#ifdef USE_CAPSULES
++    type_pointer = PyCapsule_Import(TYPE_POINTER_NAME, 0);
++#else
+     type_pointer = PyCObject_Import((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION,
+ 				    (char*)"type_pointer" SWIG_TYPE_TABLE_NAME);
++#endif
+     if (PyErr_Occurred()) {
+       PyErr_Clear();
+       type_pointer = (void *)0;
+@@ -1405,9 +1430,14 @@
+ SWIGRUNTIME void
+ SWIG_Python_DestroyModule(void *vptr)
+ {
++  size_t i;
++#ifdef USE_CAPSULES
++  swig_module_info *swig_module =
++    (swig_module_info *) PyCapsule_GetPointer((PyObject *)vptr, TYPE_POINTER_NAME);
++#else
+   swig_module_info *swig_module = (swig_module_info *) vptr;
++#endif
+   swig_type_info **types = swig_module->types;
+-  size_t i;
+   for (i =0; i < swig_module->size; ++i) {
+     swig_type_info *ty = types[i];
+     if (ty->owndata) {
+@@ -1430,9 +1460,18 @@
+   PyObject *module = Py_InitModule((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION,
+ 				   swig_empty_runtime_method_table);
+ #endif
++#ifdef USE_CAPSULES
++  PyObject *pointer = PyCapsule_New((void *)swig_module, TYPE_POINTER_NAME,
++      (PyCapsule_Destructor)SWIG_Python_DestroyModule);
++#else
+   PyObject *pointer = PyCObject_FromVoidPtr((void *) swig_module, SWIG_Python_DestroyModule);
++#endif
+   if (pointer && module) {
++#ifdef USE_CAPSULES
++    PyModule_AddObject(module, (char*)"type_pointer_capsule" SWIG_TYPE_TABLE_NAME, pointer);
++#else
+     PyModule_AddObject(module, (char*)"type_pointer" SWIG_TYPE_TABLE_NAME, pointer);
++#endif
+   } else {
+     Py_XDECREF(pointer);
+   }
+@@ -1453,12 +1492,20 @@
+   PyObject *obj = PyDict_GetItem(cache, key);
+   swig_type_info *descriptor;
+   if (obj) {
++#ifdef USE_CAPSULES
++    descriptor = (swig_type_info *) PyCapsule_GetPointer(obj, type);
++#else
+     descriptor = (swig_type_info *) PyCObject_AsVoidPtr(obj);
++#endif
+   } else {
+     swig_module_info *swig_module = SWIG_Python_GetModule();
+     descriptor = SWIG_TypeQueryModule(swig_module, swig_module, type);
+     if (descriptor) {
++#ifdef USE_CAPSULES
++      obj = PyCapsule_New(descriptor, type, NULL);
++#else
+       obj = PyCObject_FromVoidPtr(descriptor, NULL);
++#endif
+       PyDict_SetItem(cache, key, obj);
+       Py_DECREF(obj);
+     }
