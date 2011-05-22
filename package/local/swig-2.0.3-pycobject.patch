@@ -6,7 +6,7 @@
  #define SWIG_Error(code, msg)            		SWIG_Python_SetErrorMsg(SWIG_ErrorType(code), msg) 
 -#define SWIG_fail                        		goto fail					   
 +#define SWIG_fail goto fail
- 
+
 +/*
 + * Python 2.7 and newer and Python 3.1 and newer should use Capsules API instead of
 + * CObjects API.
@@ -28,9 +28,9 @@
 +#define TYPE_POINTER_NAME \
 + ((char*)"swig_runtime_data" SWIG_RUNTIME_VERSION ".type_pointer_capsule" SWIG_TYPE_TABLE_NAME)
 +#endif
- 
+
  /* Runtime API implementation */
- 
+
 @@ -1359,8 +1380,12 @@
  #ifdef SWIG_LINK_RUNTIME
      type_pointer = SWIG_ReturnGlobalTypeList((void *)0);

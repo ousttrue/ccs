@@ -15,7 +15,9 @@ archive=swig-2.0.3.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 # swig200-rh623854.patch
-(cd Lib/python && patch < $CCS_SELF_DIR/swig-2.0.3-pyrun.swg.diff)
+(cd Lib/python && patch < $CCS_SELF_DIR/swig-2.0.3-pycobject.patch)
+# swig200-rh666429.patch
+patch -p1 < $CCS_SELF_DIR/swig-2.0.3-pyslice.patch
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT || exit 1
 make -j4 || exit 1
 make install
