@@ -1,0 +1,13 @@
+/* Config for win32 */
+
+#undef HAVE__EXIT
+#undef HAVE_SYSCONF
+#undef HAVE_GETPGID
+#undef HAVE_SETPGID
+#undef HAVE_TCGETPGRP
+#undef HAVE_TCSETPGRP
+#undef HAVE_CTERMID
+#undef HAVE_TTYNAME
+#undef HAVE_GETSID
+#undef HAVE_SETREUID
+#undef HAVE_SETREGID
