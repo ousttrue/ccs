@@ -1,5 +1,5 @@
 binaryPackage {
-    name="gtk+",
+    name="gtk+-bundle",
     version="2.22.1-20101229",
     host="x86_64-w64-mingw32",
     url={
