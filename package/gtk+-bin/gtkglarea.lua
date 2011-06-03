@@ -4,7 +4,9 @@ srcPackage {
     url={
         "http://ftp.acc.umu.se/pub/gnome/sources/gtkglarea/2.0/gtkglarea-2.0.1.tar.bz2"
     },
-
+    depends={
+        "gtk+-bin",
+    },
     sh=[=[
 set -x
 export PKG_CONFIG_PATH="$CCS_TARGET_ROOT/lib/pkgconfig:$PKG_CONFIG_PATH"

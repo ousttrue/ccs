@@ -15,6 +15,7 @@ archive=tk8.5.9-src.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/tk8.5.9/win
 ./configure --host=$CCS_TARGET --prefix=$CCS_TARGET_ROOT --enable-gcc --enable-threads
+make || exit 1
 make install
     ]=],
 }

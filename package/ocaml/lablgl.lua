@@ -10,7 +10,7 @@ srcPackage {
     sh=[=[
 set -x
 export FLEXLINKFLAGS="-L$CCS_TARGET_ROOT/lib -L`dirname $CCS_TARGET_ROOT`/lib"
-export PATH="$CCS_TARGET_ROOT/lib/stublibs:$PATH"
+export PATH="$CCS_TARGET_ROOT/bin:$CCS_TARGET_ROOT/lib/stublibs:$PATH"
 export PREFIXED_INCLUDES="-I$CCS_TARGET_ROOT/include"
 export OCAMLLIB="$CCS_TARGET_ROOT/lib"
 export C_INCLUDE_PATH="$CCS_TARGET_ROOT/include"

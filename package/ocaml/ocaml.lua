@@ -23,10 +23,10 @@ cp config/m-nt.h config/m.h
 cp config/s-nt.h config/s.h
 cp config/Makefile.mingw config/Makefile
 
-make -j4 -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT world || exit 1
-make -j4 -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT bootstrap || exit 1
-make -j4 -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT opt || exit 1
-make -j4 -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT opt.opt || exit 1
-make -j4 -f Makefile.nt install PREFIX=$CCS_TARGET_ROOT
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT world || exit 1
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT bootstrap || exit 1
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT opt || exit 1
+make -f Makefile.nt TK_ROOT=$CCS_TARGET_ROOT opt.opt || exit 1
+make -f Makefile.nt install PREFIX=$CCS_TARGET_ROOT
     ]=],
 }
