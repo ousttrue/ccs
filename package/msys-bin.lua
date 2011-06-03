@@ -6,7 +6,7 @@ groupPackage {
         "diffutils", "patch", "sed", "grep",
         "findutils", "termcap", "libopenssl",
         "vim-7.2", "autotools", "gettext-bin",
-        "perl",
+        "perl", "file",
     }
 }
 binaryPackage {
@@ -313,6 +313,16 @@ binaryPackage {
     host="i686-pc-msys",
     url={
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/flex/flex-2.5.35-2/flex-2.5.35-2-msys-1.0.13-bin.tar.lzma",
+    },
+}
+binaryPackage {
+    name="file",
+    version="5.04",
+    release="1",
+    host="i686-pc-msys",
+    url={
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/file/file-5.04-1/file-5.04-1-msys-1.0.13-bin.tar.lzma",
+        "http://jaist.dl.sourceforge.net/project/mingw/MSYS/file/file-5.04-1/libmagic-5.04-1-msys-1.0.13-dll-1.tar.lzma",
     },
 }
 
