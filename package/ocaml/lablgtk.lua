@@ -5,7 +5,7 @@ srcPackage {
         "http://www.math.nagoya-u.ac.jp/~garrigue/soft/olabl/dist/lablgtk-2.14.2.tar.gz"
     },
     depends={
-        "ocaml", "gtk+-bin", "lablgl", "gtkglarea",
+        "ocaml", "findlib", "gtk+-bin", "lablgl", "gtkglarea",
     },
     sh=[=[
 set -x

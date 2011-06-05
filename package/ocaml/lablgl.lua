@@ -5,7 +5,7 @@ srcPackage {
         "http://www.math.nagoya-u.ac.jp/~garrigue/soft/olabl/dist/lablgl-1.04.tar.gz"
     },
     depends={
-        "ocaml", "freeglut",
+        "ocaml", "findlib", "freeglut",
     },
     sh=[=[
 set -x
