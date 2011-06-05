@@ -320,6 +320,9 @@ binaryPackage {
     version="5.04",
     release="1",
     host="i686-pc-msys",
+    depends={
+        "zlib-bin",
+    },
     url={
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/file/file-5.04-1/file-5.04-1-msys-1.0.13-bin.tar.lzma",
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/file/file-5.04-1/libmagic-5.04-1-msys-1.0.13-dll-1.tar.lzma",
