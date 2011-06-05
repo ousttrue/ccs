@@ -11,6 +11,7 @@ srcPackage {
 set -x
 export FLEXLINKFLAGS="-L$CCS_TARGET_ROOT/lib -L`dirname $CCS_TARGET_ROOT`/lib"
 export C_INCLUDE_PATH="$CCS_TARGET_ROOT/include"
+export PATH="$CCS_TARGET_ROOT/bin:$PATH"
 #export OCAMLLIB="$CCS_TARGET_ROOT/bin"
 mkdir -p $CCS_TARGET_ROOT/src
 mkdir -p $CCS_TARGET_ROOT/bin

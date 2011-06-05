@@ -1,14 +1,14 @@
 groupPackage {
-    name="gtk+-bin",
+    name="gtk+2-bin",
     host="i686-pc-mingw32",
     depends={
-        "gtk+-bundle", "librsvg-bin", "libglade-bin", "libxml2-bin",
+        "gtk+2-bundle", "librsvg-bin", "libglade-bin", "libxml2-bin",
         "libgnomecanvas-bin", "libart_lgpl-bin", "libcroco-bin",
         "cairo-bin", "pango-bin", "atk-bin",
     }
 }
 binaryPackage {
-    name="gtk+-bundle",
+    name="gtk+2-bundle",
     version="2.22.1",
     revision="20101227",
     host="i686-pc-mingw32",

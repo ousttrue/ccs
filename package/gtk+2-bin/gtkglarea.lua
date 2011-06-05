@@ -5,7 +5,7 @@ srcPackage {
         "http://ftp.acc.umu.se/pub/gnome/sources/gtkglarea/2.0/gtkglarea-2.0.1.tar.bz2"
     },
     depends={
-        "gtk+-bin",
+        "gtk+2-bin",
     },
     sh=[=[
 set -x

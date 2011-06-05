@@ -6,12 +6,15 @@ srcPackage {
     },
     sh=[=[
 set -x
+export PATH="$CCS_TARGET_ROOT/bin:$CCS_TARGET_ROOT/lib/stublibs:$PATH"
+export OCAMLLIB=$CCS_TARGET_ROOT/lib
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=findlib-1.2.6.tar.gz
 archive_dir=`extract $CCS_DOWNLOAD/$archive src`
 cd src/$archive_dir
 ./configure
-make install -j4
+make || exit 1
+make install
     ]=],
 }

@@ -5,15 +5,15 @@ srcPackage {
         "http://www.math.nagoya-u.ac.jp/~garrigue/soft/olabl/dist/lablgl-1.04.tar.gz"
     },
     depends={
-        "ocaml", "findlib", "freeglut",
+        "findlib", "ocaml", "freeglut",
     },
     sh=[=[
 set -x
-export FLEXLINKFLAGS="-L$CCS_TARGET_ROOT/lib -L`dirname $CCS_TARGET_ROOT`/lib"
+export FLEXLINKFLAGS="-L$CCS_TARGET_ROOT/../lib -L$CCS_TARGET_ROOT/../local/lib"
 export PATH="$CCS_TARGET_ROOT/bin:$CCS_TARGET_ROOT/lib/stublibs:$PATH"
 export PREFIXED_INCLUDES="-I$CCS_TARGET_ROOT/include"
 export OCAMLLIB="$CCS_TARGET_ROOT/lib"
-export C_INCLUDE_PATH="$CCS_TARGET_ROOT/include"
+export C_INCLUDE_PATH="$CCS_TARGET_ROOT/../local/include"
 mkdir -p $CCS_TARGET_ROOT/src
 cd $CCS_TARGET_ROOT
 archive=lablgl-1.04.tar.gz
