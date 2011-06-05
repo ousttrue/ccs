@@ -136,8 +136,7 @@ function createFstab(){
         echo(line);
         io.WriteLine(line);
     }
-    writeFstab(io, MINGW_DIR, "/i686-pc-mingw32");
-    writeFstab(io, MINGW64_DIR, "/x86_64-w64-mingw32");
+    writeFstab(io, MINGW_DIR, "/cc");
     io.Close();
 }
 createFstab();
@@ -161,50 +160,40 @@ function create_ccsrc(){
 }
 create_ccsrc();
 
+function create_link(name, command, arg, icon)
+{
+    var sc=shell.CreateShortCut(ROOT_DIR+"\\"+name+".lnk");
+    sc.TargetPath=ROOT_DIR+command;
+    sc.Arguments=arg;
+    if(icon){
+        sc.IconLocation=ROOT_DIR+"\\"+icon;
+    }
+    sc.Save();
+}
+
 // msys_to_msys
 echo("create: msys_to_msys.lnk");
-var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_msys.lnk");
-sc.TargetPath=ROOT_DIR+"\\bin\\bash";
-sc.Arguments="/script/msys_to_msys ";
-sc.IconLocation=ROOT_DIR+"\\m.ico";
-sc.Save();
+create_link("msys_to_msys", "\\bin\\bash.exe", "/script/msys_to_msys", "m.ico");
 
 // msys_to_msys(mintty)
 echo("create: msys_to_msys(mintty).lnk");
-var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_msys(mintty).lnk");
-sc.TargetPath=ROOT_DIR+"\\bin\\mintty.exe";
-sc.Arguments="/script/msys_to_msys";
-sc.Save();
+create_link("msys_to_msys(mintty)", "\\bin\\mintty.exe" "/script/msys_to_msys");
 
 // msys_to_i686-pc-mingw32
 echo("create: msys_to_i686-pc-mingw32.lnk");
-var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_i686-pc-mingw32.lnk");
-sc.TargetPath=ROOT_DIR+"\\bin\\bash";
-sc.Arguments="/script/msys_to_i686-pc-mingw32";
-sc.IconLocation=ROOT_DIR+"\\msys.ico";
-sc.Save();
+create_link("msys_to_i686-pc-mingw32", "\\bin\\bash.exe", "/script/msys_to_i686-pc-mingw32", "msys.ico");
 
 // msys_to_i686-pc-mingw32(mintty)
 echo("create: msys_to_i686-pc-mingw32(mintty).lnk");
-var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_i686-pc-mingw32(mintty).lnk");
-sc.TargetPath=ROOT_DIR+"\\bin\\mintty.exe";
-sc.Arguments="/script/msys_to_i686-pc-mingw32";
-sc.Save();
+create_link("msys_to_i686-pc-mingw32(mintty)", "\\bin\\mintty.exe", "/script/msys_to_i686-pc-mingw32");
 
 // msys_to_x86_64-w64-mingw32
 echo("create: msys_to_x86_64-w64-mingw32.lnk");
-var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_x86_64-w64-mingw32.lnk");
-sc.TargetPath=ROOT_DIR+"\\bin\\bash";
-sc.Arguments="/script/msys_to_x86_64-w64-mingw32 ";
-//sc.IconLocation=ROOT_DIR+"\\m.ico";
-sc.Save();
+create_link("msys_to_x86_64-w64-mingw32", "\\bin\\bash.exe", "script/msys_to_x86_64-w64-mingw32");
 
 // msys_to_x86_64-w64-mingw32(mintty)
 echo("create: msys_to_x86_64-w64-mingw32(mintty).lnk");
-var sc=shell.CreateShortCut(ROOT_DIR+"\\msys_to_x86_64-w64-mingw32(mintty).lnk");
-sc.TargetPath=ROOT_DIR+"\\bin\\mintty.exe";
-sc.Arguments="/script/msys_to_x86_64-w64-mingw32";
-sc.Save();
+create_link("msys_to_x86_64-w64-mingw32(mintty)", "\\bin\\mintty.exe", "script/msys_to_x86_64-w64-mingw32");
 
 echo("");
 
