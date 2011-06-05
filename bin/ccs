@@ -934,7 +934,7 @@ function Manager:toolchain()
 
 
     print()
-    local name=toolchains[num][1].toolchain_name()
+    local name=toolchains[num][1]:toolchain_name()
     table.foreachi(toolchains[num], function(i, v)
         root=Node(v)
         self:resolve_dependencies(root, dir)
@@ -951,7 +951,7 @@ installed to /cc/%s
 
 add follow environment variable.
 export CCS_TARGET_ROOT="/cc/%s"
-export PATH="$CCS_TARGET_ROOT/bin:$CCS_TARGET_ROOT/local/bin"
+export PATH="$CCS_TARGET_ROOT/bin:$CCS_TARGET_ROOT/local/bin:$PATH"
 export PKG_CONFIG_PATH="$CCS_TARGET_ROOT/lib/pkgconfig:$CCS_TARGET_ROOT/local/lib/pkgconfig"
 ]=], name, name))
 end

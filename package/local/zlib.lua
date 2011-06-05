@@ -29,10 +29,6 @@ srcPackage {
     depends={
         "libtool",
     },
-    ["sh"]=sh_configure,
-    ["sh_i686-pc-msys"]=sh_win,
-    ["sh_i686-pc-mingw32"]=sh_win,
-    --["sh_i686-w64-mingw32"]=sh_win,
-    ["sh_x86_64-w64-mingw32"]=sh_win,
+    ["sh"]=sh_win,
 }
 
