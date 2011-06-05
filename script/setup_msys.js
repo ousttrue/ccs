@@ -4,6 +4,7 @@
 // msys environment setup script
 //////////////////////////////////////////////////////////////////////////////
 var DOWNLOAD_DIR="C:\\download";
+var CC_DIR="C:\\cc";
 
 var ie = WScript.CreateObject("InternetExplorer.Application");
 var fso = new ActiveXObject("Scripting.FileSystemObject");
@@ -40,8 +41,6 @@ splited.pop();
 var ROOT_DIR=splited.join("\\");
 var SCRIPT_DIR=ROOT_DIR+"\\script";
 var PACKAGE_DIR=ROOT_DIR+"\\package";
-var MINGW_DIR="C:\\i686-pc-mingw32";
-var MINGW64_DIR="C:\\x86_64-w64-mingw32";
 
 function echo(l)
 {
@@ -136,7 +135,7 @@ function createFstab(){
         echo(line);
         io.WriteLine(line);
     }
-    writeFstab(io, MINGW_DIR, "/cc");
+    writeFstab(io, CC_DIR, "/cc");
     io.Close();
 }
 createFstab();
@@ -177,7 +176,7 @@ create_link("msys_to_msys", "\\bin\\bash.exe", "/script/msys_to_msys", "m.ico");
 
 // msys_to_msys(mintty)
 echo("create: msys_to_msys(mintty).lnk");
-create_link("msys_to_msys(mintty)", "\\bin\\mintty.exe" "/script/msys_to_msys");
+create_link("msys_to_msys(mintty)", "\\bin\\mintty.exe", "/script/msys_to_msys");
 
 // msys_to_i686-pc-mingw32
 echo("create: msys_to_i686-pc-mingw32.lnk");
@@ -200,7 +199,7 @@ echo("");
 echo("copy lua interpreter");
 fso.CopyFile(ROOT_DIR+"/script/lua_msys.exe", ROOT_DIR+"/bin/lua.exe");
 
-echo("setup msys");
+echo("setup msys...");
 var results=exec(ROOT_DIR+"/bin/bash.exe /script/msys_to_msys true");
 for(var i in results){
     var line=results[i];

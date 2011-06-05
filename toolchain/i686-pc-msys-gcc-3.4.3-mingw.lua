@@ -1,3 +1,6 @@
+------------------------------------------------------------------------------
+-- MinGW: http://sourceforge.net/projects/mingw
+------------------------------------------------------------------------------
 toolchainPackage {
     name="toolchain",
     host="i686-pc-msys",
@@ -49,3 +52,4 @@ binaryPackage {
         "http://jaist.dl.sourceforge.net/project/mingw/MSYS/w32api/w32api-3.14-3/w32api-3.14-3-msys-1.0.12-dev.tar.lzma",
     },
 }
+

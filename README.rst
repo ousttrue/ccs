@@ -16,7 +16,7 @@ WindowsXP(32bit)とWindows7(64bit)でわりと動きました。
 
 ::
 
-    bin(Msysのルートになる)
+    bin(msysの展開先)
         lua.exe msysとリンクしたlua。luafilesystem http://keplerproject.github.com/luafilesystem/ を含めている
         ccs luaスクリプト。本体
     script
@@ -30,10 +30,9 @@ WindowsXP(32bit)とWindows7(64bit)でわりと動きました。
 ccsの展開先に追加して、
 
 - C:/download パッケージアーカイブのダウンロード用
-- C:/i686-pc-mingw32 MinGWのtoolchain展開及びソースパッケージのインストール先 
-- C:/x86_64-w64-mingw32 MinGW-W64 http://mingw-w64.sourceforge.net/ のtoolchain展開及びソースパッケージのインストール先
+- C:/cc コンパイラの展開先
 
-を使います。
+を使います(msysからmountする)。
 
 ------------
 何ができるか

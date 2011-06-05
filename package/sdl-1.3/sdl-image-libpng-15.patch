@@ -1,0 +1,29 @@
+--- configure.orig	2011-02-06 16:45:48 +0900
++++ configure	2011-02-06 16:47:19 +0900
+@@ -13554,7 +13554,7 @@
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lpng -lz $LIBS"
++LIBS="`libpng-config --libs` $LIBS"
+ cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+ _ACEOF
+@@ -13757,7 +13757,7 @@
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lpng -lz $LIBS"
++LIBS="`libpng-config --libs` $LIBS"
+ cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+ _ACEOF
+@@ -14192,7 +14192,7 @@
+ _ACEOF
+ 
+     else
+-        IMG_LIBS="-lpng -lz $IMG_LIBS"
++        IMG_LIBS="`libpng-config --libs` $IMG_LIBS"
+     fi
+ fi
+ 

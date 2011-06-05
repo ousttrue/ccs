@@ -28,6 +28,7 @@ elseif CCS_HOST=="cygwin" then
 elseif string.match(CCS_HOST, "linux") then
     CCS_HOST=os_capture("echo $HOSTTYPE").."-linux"
 end
+--[[
 local target_map={
     ["i686-pc-msys"]="/usr",
     ["i686-pc-cygwin"]="/usr",
@@ -39,6 +40,8 @@ if not CCS_TARGET_ROOT then
     print("NO CCS_TARGET_ROOT for "..CCS_TARGET)
     os.exit()
 end
+]]
+local CCS_TARGET_ROOT=os.getenv("CCS_TARGET_ROOT")
 local CCS_DOWNLOAD=os.getenv("CCS_DOWNLOAD") or CCS_ROOT.."/download"
 
 
@@ -450,9 +453,9 @@ function BinaryPackage:eq(rhs)
     return self.name==rhs.name and self.host==rhs.target
 end
 
-function BinaryPackage:install()
+function BinaryPackage:install(dst)
     self:download(function(archive)
-        extract(CCS_DOWNLOAD.."/"..archive, self:getTargetRoot())
+        extract(CCS_DOWNLOAD.."/"..archive, dst or self:getTargetRoot())
     end)
     print(string.format("\n %s installed !!\n", self.name))
 end
@@ -467,12 +470,13 @@ local ToolchainPackage=newClass("ToolchainPackage", function(self, t)
     end
 end, Package)
 
+function ToolchainPackage:toolchain_name()
+    name=self.file:match(".*/(.*)%.lua$")
+    return name
+end
+
 function ToolchainPackage:to_s()
-    local s="[->"..self.target.."]"..self.name
-    if self.version then
-        s=s.."-"..self.version
-    end
-    return s
+    return "["..self:toolchain_name().."]"
 end
 
 function ToolchainPackage:isInstalled()
@@ -480,10 +484,11 @@ function ToolchainPackage:isInstalled()
 end
 
 function ToolchainPackage:install()
+    print("install:", self.name)
+    local name=self:toolchain_name()
     self:download(function(archive)
-        extract(CCS_DOWNLOAD.."/"..archive, self:getTargetRoot())
+        extract(CCS_DOWNLOAD.."/"..archive, "/cc/"..name)
     end)
-    print(string.format("\n %s installed !!\n", self.name))
 end
 
 function ToolchainPackage:eq(rhs)
@@ -618,7 +623,8 @@ local function loadPackage(file)
                 table.insert(packages, SrcPackage(t))
             end,
             toolchainPackage=function(t)
-                table.insert(packages, ToolchainPackage(t))
+                p=ToolchainPackage(t)
+                table.insert(packages, p)
             end,
         }
     })
@@ -687,6 +693,19 @@ local Manager=newClass("Manager", function(self)
             end
         end
     end)
+    -- load toolchains
+    self.toolchains={}
+    dir_walk(CCS_ROOT..'/toolchain', function(f)
+        if f:match("%.lua$") then
+            for i, v in ipairs(loadPackage(f)) do
+                local key=v:to_s()
+                if not self.toolchains[key] then
+                    self.toolchains[key]={}
+                end
+                table.insert(self.toolchains[key], v)
+            end
+        end
+    end)
     print("HOST to TARGET:", CCS_HOST.." to "..CCS_TARGET)
     print()
 end)
@@ -695,18 +714,18 @@ function Manager:usage()
     local hosts={}
 
     return string.format([=[
-usage: ccs {list|install|toolchain} [args...]
+usage: ccs {toolchain|install|list} [args...]
 
-list : display installed packages.
-toolchain : install compile toolchain.
+toolchain : install toolchain.
 install {package}: install a package. 
+list : display installed packages.
 
 CCS_ROOT: %s (%d packages)
 CCS_TARGET_ROOT: %s
 CCS_DOWNLOAD: %s
     ]=], 
     CCS_ROOT, self.package_count,
-    CCS_TARGET_ROOT, 
+    CCS_TARGET_ROOT or "first, execute toolchain.",
     CCS_DOWNLOAD)
 end
 
@@ -807,6 +826,13 @@ function Manager:find_package(p)
 end
 
 function Manager:install(name, dir)
+    if not CCS_TARGET_ROOT then
+        print("require CCS_TARGET_ROOT environment variable.")
+        print()
+        print("do")
+        print("$ ccs toolchain")
+        os.exit()
+    end
     local t=self:find(name, dir)
     if not t then
         print("not found", name)
@@ -820,6 +846,7 @@ function Manager:install(name, dir)
 
     -- create install queue
     local queue=root:to_queue()
+    print()
     print(string.format("## install queue %d ##", #queue))
     local notFound=false
     for i, v in ipairs(queue) do
@@ -884,6 +911,49 @@ function Manager:resolve_dependencies(node, dir)
             node:add_child(child)
         end
     end
+end
+
+function Manager:toolchain()
+    local toolchains={}
+    table.foreach(self.toolchains, function(k, toolchain)
+        if k:find(CCS_TARGET, 1, true) then
+            table.insert(toolchains, toolchain)
+        end
+    end)
+    table.sort(toolchains, function(l, r)
+        return l[1].file < r[1].file
+    end)
+    table.foreachi(toolchains, function(i, v)
+        print("["..i.."]"..v[1]:toolchain_name())
+    end)
+    print("select toolchain number ?")
+    local num=tonumber(io.read("*line"))
+    if not toolchains[num] then
+        return
+    end
+
+
+    print()
+    local name=toolchains[num][1].toolchain_name()
+    table.foreachi(toolchains[num], function(i, v)
+        root=Node(v)
+        self:resolve_dependencies(root, dir)
+        --root:show()
+
+        table.foreachi(root:to_queue(), function(j, w)
+            w:install("/cc/"..name)
+        end)
+    end)
+
+    print(string.format([=[
+
+installed to /cc/%s
+
+add follow environment variable.
+export CCS_TARGET_ROOT="/cc/%s"
+export PATH="$CCS_TARGET_ROOT/bin:$CCS_TARGET_ROOT/local/bin"
+export PKG_CONFIG_PATH="$CCS_TARGET_ROOT/lib/pkgconfig:$CCS_TARGET_ROOT/local/lib/pkgconfig"
+]=], name, name))
 end
 
 
