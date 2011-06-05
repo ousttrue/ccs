@@ -5,7 +5,7 @@ srcPackage {
         "http://jaist.dl.sourceforge.net/project/ocamlsdl/OCamlSDL/ocamlsdl-0.8.0/ocamlsdl-0.8.0.tar.gz"
     },
     depends={
-        "ocaml", "sdl-1.2",
+        "ocaml", "sdl-1.2", "sdl-image-1.2", "sdl-mixer-1.2",
     },
     sh=[=[
 set -x
